@@ -1,0 +1,64 @@
+# Manual do Usuário
+
+_Documento gerado automaticamente — Etapa 1 do TCC: Templating puro (Jinja2), sem geração de texto por IA._
+
+## Visão Geral
+
+{% for artefato in epic %}
+### {{ artefato.titulo }}
+
+{{ artefato.descricao }}
+
+{% endfor %}
+## Funcionalidades
+
+{% for artefato in story %}
+### {{ artefato.titulo }}
+
+{{ artefato.descricao }}
+
+{% if artefato.criterios_aceitacao %}
+**Passo a passo:**
+
+{% for criterio in artefato.criterios_aceitacao %}
+{{ loop.index }}. {{ criterio }}
+{% endfor %}
+
+{% elif artefato.subtarefas %}
+**Passo a passo:**
+
+{% for subtarefa in artefato.subtarefas %}
+{{ loop.index }}. {{ subtarefa.titulo }} ({{ subtarefa.status }})
+{% endfor %}
+
+{% endif %}
+{% endfor %}
+## Tarefas Operacionais
+
+{% for artefato in task %}
+### {{ artefato.titulo }}
+
+{{ artefato.descricao }}
+
+{% endfor %}
+## Problemas Conhecidos
+
+{% if bug %}
+| Chave | Título | Status |
+| --- | --- | --- |
+{% for artefato in bug %}
+| {{ artefato.chave }} | {{ artefato.titulo }} | {{ artefato.status }} |
+{% endfor %}
+{% else %}
+Nenhum problema conhecido registrado.
+{% endif %}
+{% if outros %}
+
+## Outros Itens
+
+_Artefatos com tipo não reconhecido pela classificação (ver `TIPO_PARA_CATEGORIA` em `generator.py`):_
+
+{% for artefato in outros %}
+- **{{ artefato.chave }}** — {{ artefato.titulo }} (tipo: {{ artefato.tipo }})
+{% endfor %}
+{% endif %}

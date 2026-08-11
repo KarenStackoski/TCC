@@ -1,0 +1,12 @@
+# Etapa 1 — Templating puro
+Jinja2==3.1.6
+requests==2.34.2
+python-dotenv==1.2.2
+pytest==9.1.1
+
+# Etapas 2/3 — RAG e Híbrido (já instaladas no venv, deixadas fixadas
+# aqui para reprodutibilidade do ambiente do TCC como um todo)
+langchain==1.3.13
+langchain-core==1.4.9
+chromadb==1.5.9
+cohere==7.0.5
