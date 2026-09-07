@@ -204,3 +204,81 @@ quando/se o usuário decidir usar a chave paga.
   `manual_template.md.j2` da Etapa 1 e usa `claude_backend`/`cohere_backend`
   como "motor de reescrita" por seção, em vez de gerar o documento inteiro
   livre (ver `docs/rag/01_estrutura.md`, seção 4).
+
+## Sessão 3 — 2026-09-07 — Etapa 3 (Híbrido) implementada e executada
+
+### Decisões tomadas nesta sessão (confirmadas com o usuário, não presumidas)
+
+1. **Todas as 4 seções reescritas por LLM, incluindo "Problemas Conhecidos"**
+   — o usuário escolheu abordagem uniforme entre as 4 categorias em vez de
+   manter a tabela de bugs determinística como na Etapa 1 (opção também
+   oferecida). Cada bug ainda traz chave/título/status no texto gerado,
+   para não perder rastreabilidade.
+2. **Só variante Cohere executada** — mesma decisão da Etapa 2 (sem
+   `ANTHROPIC_API_KEY` paga); `gerar_secao_claude`/`montar_prompt_claude`
+   implementados e testados (parte pura), mas não executados.
+3. **Uma chamada de LLM por seção (categoria), não por artefato nem para o
+   documento inteiro** — decisão já registrada ao fim da Etapa 2
+   (`docs/rag/01_estrutura.md`, seção 4), confirmada e implementada nesta
+   sessão em `src/hybrid/section_backend.py`.
+
+### O que existe no repositório agora (além do que já existia nas Etapas 1–2)
+
+```
+src/hybrid/section_backend.py                 # SECTION_CONFIG, gerar_secao_cohere, gerar_secao_claude
+src/hybrid/templates/manual_hibrido.md.j2      # estrutura fixa, corpo de cada seção = 1 variável
+src/hybrid/generator.py                        # gerar_manuais, main() (CLI)
+tests/test_hybrid_section_backend.py           # 5 testes
+tests/test_hybrid_generator.py                 # 3 testes
+docs/hybrid/01_estrutura.md                    # arquitetura da Etapa 3, com fontes
+docs/hybrid/02_referencias.md                  # referência linha a linha, incluindo os bugs abaixo
+```
+
+Suíte de testes completa: **31/31 passando** (23 das Etapas 1–2 + 8 novos).
+
+### Bugs encontrados e corrigidos na primeira execução ponta a ponta
+
+1. **Truncamento por `MAX_TOKENS`**: a seção "Funcionalidades" (15
+   Histórias de Usuário) foi cortada no meio de uma frase, com uma tag de
+   citação bruta e incompleta vazando no texto (`<co: 1>...`). Diagnóstico
+   isolado confirmou `finish_reason == "MAX_TOKENS"` e
+   `output_tokens == 4096` — o teto de saída do próprio modelo
+   `command-r-08-2024` (não configurável para cima via `max_tokens`,
+   confirmado na documentação oficial da Cohere). A mesma documentação
+   confirma que citações inline (`<co: N>`) não são o formato normal de
+   resposta — a tag vazada era um artefato do corte abrupto. Corrigido
+   pedindo concisão explícita no prompt (2–3 frases por artefato); a seção
+   passou a completar em ~2600 tokens de saída, sem cortes.
+2. **Subtítulos da LLM no mesmo nível do cabeçalho fixo**: a LLM usava
+   `##` (mesmo nível de `## Funcionalidades`) para subtítulos internos,
+   quebrando a hierarquia do documento. Corrigido instruindo
+   explicitamente nível `###` ou mais profundo para subtítulos internos.
+
+Ambos os bugs só apareciam na execução real (não nos testes automatizados,
+que cobrem só as funções puras) — mesma limitação metodológica já
+registrada para a Etapa 2. Detalhamento completo em
+`docs/hybrid/02_referencias.md`.
+
+### Estado final da Etapa 3 nesta sessão
+
+- Código e documentação completos e testados (parte determinística):
+  31/31 testes passando.
+- **Executada ponta a ponta com sucesso** (`python -m src.hybrid.generator
+  --variante cohere`), gerando `data/manuals_generated/hybrid/manual_cohere.md`
+  a partir de `data/raw/data.json` real (32 artefatos), após as duas
+  correções acima: sem truncamento, sem tags soltas, hierarquia de
+  cabeçalhos correta (`###` para subtítulos internos), citações do Command
+  R presentes por seção e agrupadas no rodapé do documento.
+- Variante `claude` implementada e testada, mas não executada (mesma
+  decisão da Etapa 2).
+- Ainda falta revisão de conteúdo linha a linha pelo usuário (mesmo
+  processo de conferência manual das Etapas 1 e 2).
+
+### Para a próxima sessão
+
+- Revisar o conteúdo de `manual_cohere.md` (Etapa 3) linha a linha.
+- Com as três etapas implementadas (Templating, RAG, Híbrido), o próximo
+  passo natural do TCC é a análise/discussão comparativa entre os três
+  manuais gerados a partir do mesmo `data/raw/data.json` — não há mais
+  etapa de implementação prevista além da variante `claude` (Etapas 2 e 3),
+  pendente de decisão do usuário sobre a API paga da Anthropic.
