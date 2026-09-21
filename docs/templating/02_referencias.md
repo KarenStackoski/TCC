@@ -12,7 +12,7 @@
 |---|---|
 | `src/common/schema.py` | ✅ implementado |
 | `src/jira/adf_parser.py` | ✅ implementado |
-| `tests/test_adf_parser.py` | ✅ implementado (7/7 passando) |
+| `tests/test_adf_parser.py` | ✅ implementado (10/10 passando) |
 | `src/jira/extractor.py` | ✅ implementado (validado com data/raw/data.json real) |
 | `src/templating/generator.py` | ✅ implementado |
 | `src/templating/templates/manual_template.md.j2` | ✅ implementado |
@@ -129,13 +129,13 @@
 
 ## `src/jira/extractor.py`
 
-- **Linhas 19, 24–28 (`load_dotenv()` e `_get_env`)**: carrega `.env` e lê
+- **Linha 23, linhas 28–32 (`load_dotenv()` e `_get_env`)**: carrega `.env` e lê
   `JIRA_DOMAIN`/`JIRA_EMAIL`/`JIRA_API_TOKEN` de variáveis de ambiente, com
   erro explícito se alguma faltar. Prática de config via ambiente: The
   Twelve-Factor App, fator III (item 13 da bibliografia de
   `01_estrutura.md`). Biblioteca: `python-dotenv`
   (pypi.org/project/python-dotenv/).
-- **Linha 40 (`url = f"https://{domain}/rest/api/3/search/jql"`)**: o
+- **Linha 44 (`url = f"https://{domain}/rest/api/3/search/jql"`)**: o
   endpoint usado é `/rest/api/3/search/jql`, não o clássico `/rest/api/3/search`
   do enunciado original do projeto. Motivo: inspecionando
   `data/raw/data.json`, a resposta real tem apenas o campo `isLast` no
@@ -145,19 +145,20 @@
   developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-search/#api-rest-api-3-search-jql-get.
   (O endpoint clássico `/search` está sendo descontinuado pela Atlassian
   em favor deste.)
-- **Linhas 45–51**: chamada HTTP com `requests.get(..., auth=(email,
-  api_token))` — a tupla `(user, pass)` no parâmetro `auth` do `requests`
-  já implementa HTTP Basic Auth (RFC 7617) automaticamente, codificando
-  `email:token` em Base64 no cabeçalho `Authorization`. Fonte: Requests —
-  Authentication (requests.readthedocs.io/en/latest/user/authentication/)
-  e developer.atlassian.com/cloud/jira/platform/basic-auth-for-rest-apis/.
+- **Linhas 48–55 (laço `while True`)**: chamada HTTP com `requests.get(...,
+  auth=(email, api_token))` na linha 49 — a tupla `(user, pass)` no
+  parâmetro `auth` do `requests` já implementa HTTP Basic Auth (RFC 7617)
+  automaticamente, codificando `email:token` em Base64 no cabeçalho
+  `Authorization`. Fonte: Requests — Authentication
+  (requests.readthedocs.io/en/latest/user/authentication/) e
+  developer.atlassian.com/cloud/jira/platform/basic-auth-for-rest-apis/.
   Paginação por `nextPageToken` até `payload["isLast"]` vir `true` (linhas
-  48–51), conforme a mesma referência do endpoint acima.
-- **Linha 46 (`response.raise_for_status()`)**: converte um HTTP 4xx/5xx
+  53–55), conforme a mesma referência do endpoint acima.
+- **Linha 50 (`response.raise_for_status()`)**: converte um HTTP 4xx/5xx
   em exceção Python imediatamente, em vez de deixar o erro passar
   silenciosamente adiante como JSON malformado — comportamento documentado
   em requests.readthedocs.io/en/latest/user/quickstart/#errors-and-exceptions.
-- **Linhas 56–64, 67–87 (`_parse_subtarefas`, `parse_issue`)**: convertem
+- **Linhas 60–68, 71–94 (`_parse_subtarefas`, `parse_issue`)**: convertem
   uma issue crua da API para `Artefato`/`Subtarefa` (schema de
   `src/common/schema.py`), usando `.get(...)` com *default* para os campos
   ausentes neste dataset (`priority`, `assignee`, `labels`, `subtasks` —
@@ -166,7 +167,7 @@
   sempre devolve. Validado rodando contra as 32 issues reais de
   `data/raw/data.json` (6 Epic, 15 História, 7 Bug, 4 Request
   classificados corretamente).
-- **Linhas 90–91 (`parse_issues`)**: função pública que aplica
+- **Linhas 97–98 (`parse_issues`)**: função pública que aplica
   `parse_issue` a toda a lista — é o que `generator.py` (próxima etapa)
   vai consumir.
 
@@ -176,9 +177,9 @@ duplicados (uma vez dentro da descrição corrida, outra vez na lista
 numerada de "Passo a passo") — porque `descricao` usava o ADF completo, e
 `criterios_aceitacao` extraía a mesma lista separadamente. Corrigido
 adicionando `strip_section_after_label` em `adf_parser.py` (linhas
-141–168) e chamando-a em `extractor.py` (linha 73:
+141–168) e chamando-a em `extractor.py` (linhas 77–79:
 `descricao_sem_criterios_adf = strip_section_after_label(descricao_adf, CRITERIOS_ACEITACAO_LABEL)`,
-usada na linha 80 em vez do ADF bruto). Coberto por
+usada na linha 86 em vez do ADF bruto). Coberto por
 `test_strip_section_after_label_remove_paragrafo_e_lista_correspondentes`
 em `tests/test_adf_parser.py`. Reexecutado depois da correção — conferido
 manualmente que `## Funcionalidades` não repete mais os critérios.

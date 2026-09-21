@@ -25,19 +25,19 @@
   (Etapa 2) — mesma justificativa de escolha de modelo, já registrada em
   `docs/rag/01_estrutura.md`, seções 3.3 e 3.4. `CLAUDE_MAX_TOKENS = 4096`
   reaproveita o valor já usado em `claude_backend.py` (`MAX_TOKENS`).
-- **Linhas 36–47 (`SYSTEM_PROMPT_HIBRIDO`)**: diferente do `SYSTEM_PROMPT`
+- **Linhas 36–52 (`SYSTEM_PROMPT_HIBRIDO`)**: diferente do `SYSTEM_PROMPT`
   da Etapa 2 — instrui a LLM a **não** decidir estrutura (nem cabeçalho de
   seção, nem subtítulos no mesmo nível do cabeçalho fixo) e a escrever
   apenas o corpo de uma seção específica. Ver justificativa completa em
   `docs/hybrid/01_estrutura.md`, seção 3.2.
-- **Linhas 58–97 (`SECTION_CONFIG`)**: dicionário `categoria -> (título,
+- **Linhas 58–96 (`SECTION_CONFIG`)**: dicionário `categoria -> (título,
   instrução)`, mesmo padrão de configuração centralizada de
   `TIPO_PARA_CATEGORIA` (Etapa 1) e `QUERIES_PADRAO` (Etapa 2). As chaves
   são exatamente as cinco categorias devolvidas por
   `src.templating.generator.classificar_por_tipo` (`epic`, `story`, `task`,
   `bug`, `outros`) — verificado por
   `test_section_config_cobre_as_cinco_categorias_de_classificar_por_tipo`.
-- **Linhas 99–112 (`_formatar_documentos_cohere`)**: idêntica em estrutura
+- **Linhas 99–111 (`_formatar_documentos_cohere`)**: idêntica em estrutura
   a `_formatar_documentos` de `src/rag/cohere_backend.py` (Etapa 2, não
   reaproveitada por ser função privada do outro módulo — duplicação
   pequena e intencional, mesmo padrão de `cohere_backend.py` e
@@ -47,11 +47,11 @@
   `documents=` só com os artefatos da categoria (não o corpus inteiro) —
   fonte: Cohere. *Retrieval Augmented Generation (RAG)*.
   https://docs.cohere.com/docs/retrieval-augmented-generation-rag (já
-  citada na Etapa 2). Linha 118: devolve `("", [])` sem chamar a API
+  citada na Etapa 2). Linha 119: devolve `("", [])` sem chamar a API
   quando `artefatos` está vazio (ex.: dataset sem bugs) — evita erro e
   evita gastar chamada de API por uma seção vazia; testado em
   `test_gerar_secao_cohere_com_lista_vazia_nao_chama_api`.
-- **Linhas 142–150 (`_montar_documento_xml_claude`)** e **152–162
+- **Linhas 142–149 (`_montar_documento_xml_claude`)** e **152–161
   (`montar_prompt_claude`)**: mesma estrutura de
   `src/rag/claude_backend.py` (`_montar_documento_xml`/`montar_prompt`),
   parametrizada pela instrução da categoria em vez da instrução fixa da
@@ -59,7 +59,7 @@
   context prompting* (já citada na Etapa 2). Testado em
   `test_montar_prompt_claude_usa_instrucao_da_categoria` e
   `test_montar_prompt_claude_troca_instrucao_conforme_categoria`.
-- **Linhas 164–184 (`gerar_secao_claude`)**: mesma estrutura de
+- **Linhas 164–185 (`gerar_secao_claude`)**: mesma estrutura de
   `claude_backend.gerar_manual` (Etapa 2), parametrizada por categoria.
   Implementada e testada (a parte pura, `montar_prompt_claude`), **não
   executada** nesta sessão — decisão já registrada de não usar
@@ -84,8 +84,8 @@
    como resposta estruturada em `message.citations`; a tag bruta observada
    era um artefato do corte abrupto no meio da resolução interna da
    citação, não um formato esperado da API. **Correção**: `SYSTEM_PROMPT_HIBRIDO`
-   (linhas 36–47) e a instrução de `story` em `SECTION_CONFIG` (linhas
-   64–71) passaram a pedir explicitamente concisão (2–3 frases por
+   (linhas 36–52) e a instrução de `story` em `SECTION_CONFIG` (linhas
+   66–74) passaram a pedir explicitamente concisão (2–3 frases por
    artefato, resumindo Critérios de Aceitação em vez de listá-los por
    extenso). Reexecutado isoladamente após a correção: `finish_reason ==
    "COMPLETE"`, 2634 tokens de saída (bem abaixo do teto), sem tags soltas.
@@ -97,7 +97,7 @@
    citada na Etapa 1) e destoa do padrão da Etapa 1
    (`manual_template.md.j2` usa `###` para cada artefato dentro de uma
    seção `##`). **Correção**: instrução explícita adicionada a
-   `SYSTEM_PROMPT_HIBRIDO` (linhas 44–47) pedindo nível 3 (`###`) ou mais
+   `SYSTEM_PROMPT_HIBRIDO` (linhas 48–51) pedindo nível 3 (`###`) ou mais
    profundo para qualquer subtítulo interno. Reverificado isoladamente
    (categoria `task`, 4 artefatos): saída usa `###` corretamente.
    Suíte de testes (31/31) roda sem custo de API antes/depois dessas
@@ -125,16 +125,16 @@
   mecanismo de `src/rag/pipeline.py` (Etapa 2) para `VARIANTES_DISPONIVEIS`;
   `ORDEM_CATEGORIAS` fixa a ordem de renderização das seções, igual à
   ordem de `manual_template.md.j2`.
-- **Linhas 34–44 (`_formatar_citacoes`)**: adaptação de
+- **Linhas 30–42 (`_formatar_citacoes`)**: adaptação de
   `src.rag.pipeline._formatar_citacoes` (Etapa 2) para agrupar citações por
   seção (título da seção como sub-cabeçalho), já que agora há uma lista de
   citações por categoria, não uma lista única para o documento inteiro.
   Testada em `tests/test_hybrid_generator.py`.
-- **Linhas 47–55 (`_renderizar`)**: mesmas opções de `Environment`
+- **Linhas 45–53 (`_renderizar`)**: mesmas opções de `Environment`
   (`trim_blocks`, `lstrip_blocks`, `select_autoescape` desabilitado para
   `.j2`) de `src/templating/generator.gerar_manual` (Etapa 1) — mesma
   fonte (jinja.palletsprojects.com).
-- **Linhas 58–83 (`gerar_manuais`)**: reaproveita
+- **Linhas 56–83 (`gerar_manuais`)**: reaproveita
   `classificar_por_tipo` de `src/templating/generator.py` (Etapa 1, sem
   alteração — ver `docs/hybrid/01_estrutura.md`, seção 3.1) em vez de
   `indexar`/`recuperar` (Etapa 2): não há embeddings nem recuperação nesta
@@ -143,7 +143,7 @@
   (ou `gerar_secao_claude`) uma vez — a "uma chamada por seção" da
   arquitetura. Testada com lista de artefatos vazia (nenhuma chamada de
   API) em `test_gerar_manuais_com_lista_vazia_nao_chama_nenhuma_api`.
-- **Linhas 86–110 (`main`)**: mesmo formato de CLI (`argparse`, flag
+- **Linhas 86–113 (`main`)**: mesmo formato de CLI (`argparse`, flag
   `--variante` repetível) de `src/rag/pipeline.py` (Etapa 2), gravando em
   `data/manuals_generated/hybrid/manual_<variante>.md`.
 

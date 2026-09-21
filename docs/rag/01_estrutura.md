@@ -44,7 +44,7 @@ experimento controlado (variar um fator por vez).
 A Anthropic **não oferece endpoint de embeddings** na API do Claude — a
 documentação oficial recomenda explicitamente um provedor terceiro
 (Voyage AI) para isso. Fonte: Anthropic. *Embeddings*.
-https://docs.claude.com/en/docs/build-with-claude/embeddings — confirmado
+https://platform.claude.com/docs/en/build-with-claude/embeddings — confirmado
 nesta sessão. Ou seja: usar Claude em algum ponto do pipeline de RAG
 implica que a etapa de embedding/recuperação **tem que** vir de outro
 provedor — não é uma escolha de estilo, é uma restrição da própria API.
@@ -261,7 +261,7 @@ template, não precisa ser "descoberta" via retrieval).
    Natural Language Generation. *Journal of Artificial Intelligence
    Research*, 61, 65–170. (já citado em `docs/templating/01_estrutura.md`)
 3. Anthropic. *Embeddings*.
-   https://docs.claude.com/en/docs/build-with-claude/embeddings
+   https://platform.claude.com/docs/en/build-with-claude/embeddings
 4. Cohere. *Embeddings*. https://docs.cohere.com/docs/embeddings
 5. Cohere. *Retrieval Augmented Generation (RAG)*.
    https://docs.cohere.com/docs/retrieval-augmented-generation-rag
