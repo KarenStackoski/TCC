@@ -282,3 +282,57 @@ registrada para a Etapa 2. Detalhamento completo em
   manuais gerados a partir do mesmo `data/raw/data.json` — não há mais
   etapa de implementação prevista além da variante `claude` (Etapas 2 e 3),
   pendente de decisão do usuário sobre a API paga da Anthropic.
+
+## Sessão 4 — 2026-09-27 — Etapa 4 (Avaliação) implementada
+
+### O que foi feito
+
+- Figuras dos métodos (`docs/diagramas/fig1` a `fig4`) refeitas para caber
+  na largura da página do TCC: fig1, fig3 e fig4 na vertical; fig2 em grade
+  de 3 linhas (Indexação, Recuperação, Geração). O Mermaid atualizado está em
+  `docs/diagramas.md`. No LaTeX, usar `width=\linewidth` em vez de `scale`
+  (com `scale=0.2`, 2352 px viram ~16,6 cm, mais que os 16 cm de texto da ABNT).
+- Módulo `src/evaluation/` com todas as métricas combinadas com o usuário.
+  Arquitetura, fontes e comandos em `docs/evaluation/01_estrutura.md`:
+  - `benchmark.py` + `medicao.py`: tempo (mediana de N execuções, por fase)
+    e tokens; salva cada execução para a análise de variação;
+  - `metricas_texto.py`: Flesch-PT, estrutura, cobertura explícita, % de
+    texto citado;
+  - `bertscore.py`: BERTScore por janelas (sem o truncamento em 512 tokens
+    do pacote), idêntico ao `bert_score` oficial para textos curtos;
+  - `variacao.py`: reprodutibilidade entre execuções;
+  - `fidelidade.py`: planilhas de anotação frase a frase (S/P/N/-) e cobertura
+    de conteúdo;
+  - `avaliacao_humana.py`: pacote cego (manual_A..D), formulário, médias e
+    alfa de Krippendorff ordinal;
+  - `juiz_llm.py`: LLM como juiz (Command A, JSON Schema), com os vieses
+    documentados;
+  - `relatorio.py`: junta tudo em `data/evaluation/resultados.md`.
+- Novas dependências: `bert-score` (traz torch e transformers), `pyphen` e
+  `krippendorff`.
+- Testes: 63 passando (31 anteriores + 32 novos). Dois deles precisam do
+  modelo BERT no cache e são pulados sem ele.
+
+### Pendências
+
+- O manual humano (método 4) ainda não está no repositório. Caminho
+  esperado: `data/manuals_generated/manual/manual.md`. Sem ele, não há
+  BERTScore e o método 4 fica fora das planilhas.
+- O tempo do método 4 vai em `data/evaluation/tempo_manual.csv` (à mão).
+- Rodar o benchmark definitivo (5 repetições), anotar as planilhas de
+  fidelidade, recrutar pelo menos 2 avaliadores e rodar o juiz.
+- Conferir nas fontes originais as referências da Etapa 4 (escritas de memória).
+
+### Medição definitiva (2026-09-27, 18:34–19:39)
+
+- 10 execuções de cada método automático, salvas uma a uma em
+  `data/evaluation/execucoes/<metodo>/execucao_NN.md`, com data/hora e
+  SHA-256 em `data/evaluation/tempos.csv` (todas com integridade "ok").
+- Mediana do tempo total: templating 0,0051 s; RAG 123,8 s (88,7–240,9);
+  híbrido 197,4 s (170,0–271,2). Quase todo o tempo é a espera pela API.
+- 1 falha de rede (híbrido nº 6, ReadTimeout > 300 s), registrada em
+  `data/evaluation/falhas.csv` e refeita.
+- Juiz LLM rodado sobre os manuais de `data/manuals_generated/`.
+- Consumo: cerca de 90 chamadas à Cohere no total da sessão (limite Trial:
+  1.000/mês).
+- Relatório consolidado: `data/evaluation/resultados.md`.

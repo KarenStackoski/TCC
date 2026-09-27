@@ -1,0 +1,4 @@
+metodo,execucoes,mediana_s,min_s,max_s,desvio_padrao_s,mediana_tokens
+templating,10,0.0051,0.0048,0.0064,0.0005,0.0
+rag,10,123.7699,88.732,240.9057,42.6953,8512.5
+hibrido,10,197.363,169.9763,271.2465,34.1356,8786.0

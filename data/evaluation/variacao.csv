@@ -1,0 +1,4 @@
+metodo,execucoes,textos_distintos,estruturas_distintas,similaridade_media,similaridade_minima
+hibrido,10,10,1,0.5333,0.3588
+rag,10,10,4,0.6102,0.2829
+templating,10,1,1,1.0,1.0

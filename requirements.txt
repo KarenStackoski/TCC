@@ -10,6 +10,13 @@ chromadb==1.5.9
 cohere==7.0.5
 anthropic==1.2.0
 
+# Etapa 4 — Avaliação (docs/evaluation/01_estrutura.md)
+# bert-score traz torch e transformers; o modelo bert-base-multilingual-cased
+# (~700 MB) é baixado na primeira execução de src/evaluation/bertscore.py.
+bert-score==0.3.13
+pyphen==0.18.1
+krippendorff==0.8.2
+
 # langchain/langchain-core seguem instalados no venv (decisão desta sessão:
 # Etapa 2 usa os SDKs oficiais diretamente, sem LangChain — ver
 # docs/rag/01_estrutura.md), mas não são mais importados por nenhum módulo;

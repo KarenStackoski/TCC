@@ -1,0 +1,4 @@
+metodo,palavras,frases,palavras_por_frase,silabas_por_palavra,flesch_pt,faixa_flesch,secoes_nivel2,cabecalhos,saltos_de_nivel,itens_de_lista,cobertura_explicita_%,texto_citado_%
+templating,2229,197,11.31,2.345,38.93,difícil,4,30,0,60,100.0,
+rag,600,41,14.63,2.268,42.08,difícil,10,11,0,6,46.9,78.0
+hibrido,1159,74,15.66,2.309,37.61,difícil,4,27,0,15,100.0,89.2

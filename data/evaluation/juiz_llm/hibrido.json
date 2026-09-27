@@ -1,0 +1,26 @@
+{
+  "clareza": {
+    "justificativa": "O manual utiliza linguagem simples e direta, com explicações claras sobre as funcionalidades e problemas conhecidos. As seções são bem definidas e os títulos ajudam a guiar o leitor.",
+    "nota": 5
+  },
+  "coerencia": {
+    "justificativa": "A organização do manual segue uma estrutura lógica, começando com uma visão geral, passando por funcionalidades, tarefas operacionais e problemas conhecidos. Cada seção está bem conectada e não há saltos abruptos de assunto.",
+    "nota": 5
+  },
+  "completude": {
+    "justificativa": "O manual cobre a maioria das funcionalidades e problemas listados nos artefatos de origem, mas falta detalhar alguns critérios de aceitação específicos, como o tempo de expiração do link de redefinição de senha (30 minutos) e o debounce de 300ms na busca de restaurantes.",
+    "nota": 4
+  },
+  "correcao": {
+    "justificativa": "O texto está bem escrito, sem erros gramaticais ou ortográficos evidentes. As informações apresentadas estão alinhadas com os artefatos de origem, sem contradições.",
+    "nota": 5
+  },
+  "utilidade": {
+    "justificativa": "O manual fornece informações suficientes para que um usuário consiga utilizar o sistema, incluindo passos para cadastro, login, busca, pedido e pagamento. A seção de problemas conhecidos também é útil para alertar sobre possíveis dificuldades.",
+    "nota": 5
+  },
+  "afirmacoes_nao_sustentadas": [
+    "O usuário pode desativar notificações nas configurações do app.",
+    "O sistema exibe as bandeiras aceitas (Visa, Mastercard, Elo, Amex)."
+  ]
+}

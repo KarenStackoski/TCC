@@ -1,0 +1,4 @@
+# Manuais gerados no benchmark: guardados byte a byte, sem conversão de fim
+# de linha, para o SHA-256 registrado em data/evaluation/tempos.csv continuar
+# batendo em qualquer clone (core.autocrlf=true converteria para CRLF).
+data/evaluation/execucoes/** -text

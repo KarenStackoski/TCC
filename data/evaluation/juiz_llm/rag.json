@@ -1,0 +1,25 @@
+{
+  "clareza": {
+    "justificativa": "O manual utiliza linguagem simples e direta, com frases curtas e objetivas, facilitando a compreensão do usuário. No entanto, em alguns pontos, como na descrição de bugs e melhorias, a clareza poderia ser aprimorada com exemplos mais concretos ou passos para reproduzir os problemas.",
+    "nota": 4
+  },
+  "coerencia": {
+    "justificativa": "O manual está organizado de forma lógica, seguindo a estrutura das funcionalidades do sistema. Cada seção flui naturalmente para a próxima, e a hierarquia de informações é clara. No entanto, a seção de bugs e melhorias poderia ser melhor integrada ao longo do manual, em vez de agrupada no final.",
+    "nota": 4
+  },
+  "completude": {
+    "justificativa": "O manual cobre as principais funcionalidades do sistema, mas deixa de fora detalhes importantes como critérios de aceitação, severidade de bugs e informações técnicas relevantes para o usuário. Além disso, não menciona todas as histórias de usuário e épicos presentes nos artefatos de origem.",
+    "nota": 3
+  },
+  "correcao": {
+    "justificativa": "O texto está bem escrito, com gramática e ortografia corretas. No entanto, há afirmações que não são sustentadas pelos artefatos de origem, como a implementação do modo escuro, que ainda está em tarefas pendentes.",
+    "nota": 4
+  },
+  "utilidade": {
+    "justificativa": "O manual fornece informações úteis para o usuário, mas a falta de detalhes em algumas seções e a omissão de informações importantes podem dificultar o uso completo do sistema. A inclusão de exemplos práticos e passos para reproduzir problemas aumentaria sua utilidade.",
+    "nota": 3
+  },
+  "afirmacoes_nao_sustentadas": [
+    "O app atualmente só suporta tema claro, mas está prevista a implementação de suporte a modo escuro, seguindo as diretrizes de design do sistema operacional (Android e iOS). A detecção automática da preferência do sistema e a opção manual de alternar nas configurações do app serão disponibilizadas."
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "clareza": {
+    "justificativa": "O manual utiliza linguagem simples e direta, com descrições claras das funcionalidades e passos a passo bem estruturados. As seções são bem definidas e os títulos ajudam a guiar o leitor.",
+    "nota": 5
+  },
+  "coerencia": {
+    "justificativa": "O manual segue uma estrutura lógica, começando com uma visão geral, passando por funcionalidades específicas e terminando com tarefas operacionais e problemas conhecidos. Cada seção está bem conectada e a organização facilita a compreensão.",
+    "nota": 5
+  },
+  "completude": {
+    "justificativa": "O manual cobre todas as funcionalidades principais (US-01 a US-15), tarefas operacionais (IMP-01 a IMP-04) e problemas conhecidos (SCRUM-22 a SCRUM-29) mencionados nos artefatos de origem. No entanto, não inclui informações sobre as épicas (EP-01 a EP-06) além de uma breve descrição inicial, o que poderia ser expandido para maior contexto.",
+    "nota": 4
+  },
+  "correcao": {
+    "justificativa": "O texto está bem escrito, sem erros gramaticais ou ortográficos evidentes. As informações apresentadas estão alinhadas com os artefatos de origem, sem contradições.",
+    "nota": 5
+  },
+  "utilidade": {
+    "justificativa": "O manual fornece instruções detalhadas e passos a passo para cada funcionalidade, além de descrever tarefas operacionais e problemas conhecidos. Isso torna o manual útil para um usuário que precisa entender e utilizar o sistema.",
+    "nota": 5
+  },
+  "afirmacoes_nao_sustentadas": []
+}
