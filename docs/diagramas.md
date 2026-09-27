@@ -29,7 +29,7 @@ O que mostrar: pipeline 100% determinístico. Legenda sugerida: "Nenhuma
 etapa usa IA; mesma entrada gera sempre a mesma saída."
 
 ```mermaid
-flowchart LR
+flowchart TB
     A["Artefatos do Jira<br/>(32 issues, JSON)"]:::dado
     B["Extração e parsing<br/>API REST + parser ADF"]:::regra
     C["Modelo padronizado<br/>Artefato (dataclass)"]:::dado
@@ -56,37 +56,31 @@ Legenda sugerida: "A LLM decide texto e estrutura; a recuperação só
 seleciona quais artefatos entram no contexto."
 
 ```mermaid
-flowchart LR
-    A["Artefatos do Jira<br/>(32 issues)"]:::dado
-    B["Modelo padronizado<br/>Artefato"]:::dado
+block-beta
+    columns 13
+    L1["Indexação"]:2 A["Artefatos do Jira<br/>(32 issues, modelo Artefato)"]:3 space C["Embeddings dos artefatos<br/>Cohere Embed v4<br/>(search_document)"]:3 space D[("Banco vetorial<br/>Chroma")]:3
+    space:13
+    L2["Recuperação"]:2 Q["4 consultas fixas<br/>visão geral, funcionalidades,<br/>tarefas, problemas"]:3 space E["Embedding da consulta<br/>(search_query)"]:3 space F["Busca por similaridade<br/>top-k = 6 por consulta<br/>+ remoção de duplicatas"]:3
+    space:13
+    L3["Geração"]:2 I["Manual em Markdown<br/>estrutura livre<br/>+ citações por artefato"]:3 space H["Geração com LLM<br/>Cohere Command R<br/>(documents + citações)"]:3 space G["Artefatos recuperados<br/>(subconjunto)"]:3
 
-    subgraph IDX["Indexação"]
-        C["Embeddings dos artefatos<br/>Cohere Embed v4<br/>(search_document)"]:::llm
-        D[("Banco vetorial<br/>Chroma")]:::dado
-    end
-
-    subgraph REC["Recuperação"]
-        Q["4 consultas fixas<br/>visão geral, funcionalidades,<br/>tarefas, problemas"]:::regra
-        E["Embedding da consulta<br/>(search_query)"]:::llm
-        F["Busca por similaridade<br/>top-k = 6 por consulta<br/>+ remoção de duplicatas"]:::regra
-    end
-
-    G["Artefatos recuperados<br/>(subconjunto)"]:::dado
-    H["Geração com LLM<br/>Cohere Command R<br/>(documents + citações)"]:::llm
-    I["Manual em Markdown<br/>estrutura livre<br/>+ citações por artefato"]:::dado
-
-    A --> B --> C --> D
-    Q --> E --> F
+    A --> C
+    C --> D
     D --> F
-    F --> G --> H --> I
+    Q --> E
+    E --> F
+    F --> G
+    G --> H
+    H --> I
 
-    style IDX fill:#fafafa,stroke:#999,stroke-dasharray:4 4
-    style REC fill:#fafafa,stroke:#999,stroke-dasharray:4 4
-
+    classDef rotulo fill:#ffffff,stroke:#ffffff,color:#333,font-weight:bold;
     classDef dado fill:#eeeeee,stroke:#666,color:#000;
     classDef regra fill:#dbeafe,stroke:#2563eb,color:#000;
     classDef llm fill:#ffedd5,stroke:#ea580c,color:#000;
-    classDef humano fill:#dcfce7,stroke:#16a34a,color:#000;
+    class L1,L2,L3 rotulo
+    class A,D,G,I dado
+    class Q,F regra
+    class C,E,H llm
 ```
 
 Quem decide o texto: a LLM. Estrutura: a LLM.
@@ -105,16 +99,16 @@ seção. Legenda sugerida: "Document planning fixo (moldura azul); microplanning
 realization delegados à LLM (caixas laranja), uma chamada por seção."
 
 ```mermaid
-flowchart LR
+flowchart TB
     A["Artefatos do Jira<br/>(32 issues)"]:::dado
     B["Modelo padronizado<br/>Artefato"]:::dado
 
-    subgraph EST["Estrutura fixa: seções, ordem e cabeçalhos definidos antes da LLM"]
-        direction LR
+    subgraph EST["Estrutura fixa: seções, ordem e cabeçalhos definidos antes da LLM#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;"]
+        direction TB
         C["Classificação por tipo<br/>(mesma da Figura 1)"]:::regra
 
-        subgraph SEC["LLM: uma chamada por seção"]
-            direction TB
+        subgraph SEC["LLM: uma chamada por seção#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;"]
+            direction LR
             S1["Visão Geral<br/>(Epics)"]:::llm
             S2["Funcionalidades<br/>(Stories)"]:::llm
             S3["Tarefas Operacionais<br/>(Requests)"]:::llm
@@ -154,11 +148,12 @@ automatizada. Legenda sugerida: "Leitura, interpretação, escrita e revisão
 feitas manualmente, como no fluxo clássico de um QA manual."
 
 ```mermaid
-flowchart LR
+%%{init: {"flowchart": {"subGraphTitleMargin": {"top": 0, "bottom": 45}}}}%%
+flowchart TB
     A["Artefatos do Jira<br/>(32 issues)"]:::dado
 
-    subgraph HUM["Processo 100% humano, sem ferramenta de geração"]
-        direction LR
+    subgraph HUM["Processo 100% humano,<br/>sem ferramenta de geração#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;#160;"]
+        direction TB
         B["Leitura dos artefatos<br/>um a um"]:::humano
         C["Interpretação<br/>do conteúdo de cada artefato"]:::humano
         D["Escrita do manual<br/>em Markdown"]:::humano
