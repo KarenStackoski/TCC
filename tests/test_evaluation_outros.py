@@ -1,6 +1,7 @@
 """Testes das partes determinísticas dos módulos de avaliação — sem chamar
 API nem baixar modelo."""
 
+import csv
 from types import SimpleNamespace
 
 import cohere
@@ -8,7 +9,7 @@ import pytest
 import torch
 
 from src.common.schema import Artefato
-from src.evaluation import estatistica, fidelidade
+from src.evaluation import estatistica, fidelidade, reanotacao
 from src.evaluation.benchmark import resumir
 from src.evaluation.bertscore import pontuar_embeddings
 from src.evaluation.juiz_llm import CRITERIOS, arquivos_das_execucoes, montar_prompt, validar
@@ -140,15 +141,64 @@ def test_analisar_planilha_recusa_rotulo_vazio():
         fidelidade.analisar_planilha([{"id": "1", "rotulo": "", "artefatos": ""}], 1)
 
 
+ARTEFATOS_FIDELIDADE = [
+    Artefato(chave="SCRUM-4", titulo="EP-04 — Pagamentos", tipo="Epic", status="Feito", descricao="Pagar."),
+    Artefato(chave="SCRUM-18", titulo="US-12 — Pagamento com Pix", tipo="História", status="Feito", descricao="Pix."),
+    Artefato(chave="SCRUM-26", titulo="BUG-04 — Atraso", tipo="Bug", status="Feito", descricao="Atraso."),
+]
+
+
+def _ler_planilha(caminho):
+    with open(caminho, newline="", encoding="utf-8-sig") as arquivo:
+        return list(csv.DictReader(arquivo))
+
+
 def test_preparar_fidelidade_nao_sobrescreve_anotacao(tmp_path):
     manual = tmp_path / "m.md"
     manual.write_text("## A\n\nPrimeira frase. Segunda frase.", encoding="utf-8")
-    contagem = fidelidade.preparar({"rag": str(manual)}, saida_dir=tmp_path / "f")
+    contagem = fidelidade.preparar({"rag": str(manual)}, ARTEFATOS_FIDELIDADE, saida_dir=tmp_path / "f")
     assert contagem == {"rag": 3}  # título "A." + duas frases
+    assert (tmp_path / "f" / "artefatos_referencia.md").read_text(encoding="utf-8").count("## SCRUM-") == 3
     planilha = tmp_path / "f" / "rag.csv"
-    planilha.write_text("anotado", encoding="utf-8")
-    fidelidade.preparar({"rag": str(manual)}, saida_dir=tmp_path / "f")
-    assert planilha.read_text(encoding="utf-8") == "anotado"
+    # Só o pré-preenchimento: pode ser refeita.
+    assert fidelidade.preparar({"rag": str(manual)}, ARTEFATOS_FIDELIDADE, saida_dir=tmp_path / "f") == {"rag": 3}
+    linhas = _ler_planilha(planilha)
+    linhas[1]["rotulo"] = "S"
+    with open(planilha, "w", newline="", encoding="utf-8-sig") as arquivo:
+        escritor = csv.DictWriter(arquivo, fieldnames=fidelidade.CAMPOS)
+        escritor.writeheader()
+        escritor.writerows(linhas)
+    assert fidelidade.preparar({"rag": str(manual)}, ARTEFATOS_FIDELIDADE, saida_dir=tmp_path / "f") == {}
+    assert _ler_planilha(planilha)[1]["rotulo"] == "S"
+
+
+def test_frases_para_anotar_secao_titulos_e_fontes():
+    texto = (
+        "# Manual\n\n_Documento gerado automaticamente — Etapa 3 do TCC._\n\n"
+        "- [Pagamentos](#pagamentos)\n\n"
+        "## Pagamentos\n\n### US-12 — Pagamento com Pix\n\n"
+        "O QR Code vale 10 minutos. Há atraso nas notificações.\n\n"
+        "<!-- nota da autora -->\n\n"
+        "---\n\n**Citações (Cohere Command R):**\n"
+        '- "atraso nas notificações" — fonte(s): SCRUM-26'
+    )
+    frases = fidelidade.frases_para_anotar(texto, ARTEFATOS_FIDELIDADE)
+    assert [f["frase"] for f in frases] == [
+        "Manual.",
+        "Documento gerado automaticamente — Etapa 3 do TCC.",
+        "Pagamentos.",
+        "Pagamentos.",
+        "US-12 — Pagamento com Pix.",
+        "O QR Code vale 10 minutos.",
+        "Há atraso nas notificações.",
+    ]
+    assert [f["rotulo"] for f in frases] == ["-"] * 5 + ["", ""]
+    assert frases[4]["secao"] == "Pagamentos"
+    assert frases[5]["secao"] == "Pagamentos > US-12 — Pagamento com Pix"
+    # Pelo título da seção mais interna ("US-12 — Pagamento com Pix").
+    assert frases[5]["fonte_declarada"] == "SCRUM-18"
+    # Pela citação do Command R + o título da seção.
+    assert frases[6]["fonte_declarada"] == "SCRUM-18, SCRUM-26"
 
 
 # --- juiz LLM ----------------------------------------------------------------
@@ -254,3 +304,62 @@ def test_resumo_juiz_mediana_e_faixa():
     (item,) = resumo_juiz(linhas)
     assert item["execucoes"] == 3
     assert item["clareza"] == "4 (3–5)"
+
+
+# --- reanotacao --------------------------------------------------------------
+
+
+def test_kappa_cohen_exemplo_classico():
+    # 50 itens: 20 sim/sim, 5 sim/não, 10 não/sim, 15 não/não.
+    # p_o = 0,7; p_e = 0,5·0,6 + 0,5·0,4 = 0,5; κ = 0,4.
+    primeira = ["S"] * 25 + ["N"] * 25
+    segunda = ["S"] * 20 + ["N"] * 5 + ["S"] * 10 + ["N"] * 15
+    assert reanotacao.kappa_cohen(primeira, segunda) == pytest.approx(0.4)
+    assert reanotacao.interpretar(0.4) == "razoável"
+    assert reanotacao.kappa_cohen(["S"] * 3, ["S"] * 3) is None
+    assert reanotacao.interpretar(None) == "indefinido"
+
+
+def _gravar(caminho, linhas):
+    with open(caminho, "w", newline="", encoding="utf-8-sig") as arquivo:
+        escritor = csv.DictWriter(arquivo, fieldnames=fidelidade.CAMPOS)
+        escritor.writeheader()
+        for linha in linhas:
+            escritor.writerow({c: linha.get(c, "") for c in fidelidade.CAMPOS})
+
+
+def test_sortear_exige_primeira_rodada_completa_e_ignora_pre_preenchidas(tmp_path):
+    origem = tmp_path / "f"
+    origem.mkdir()
+    linhas = [{"id": "1", "frase": "Título.", "rotulo": "-", "observacao": "pré-preenchido: título ou navegação"}]
+    linhas += [{"id": str(i), "frase": f"Frase {i}.", "rotulo": ""} for i in range(2, 12)]
+    _gravar(origem / "rag.csv", linhas)
+    with pytest.raises(ValueError):
+        reanotacao.sortear(0.2, 1, origem, origem / "re")
+
+    for linha in linhas[1:]:
+        linha["rotulo"] = "S"
+    _gravar(origem / "rag.csv", linhas)
+    registro = reanotacao.sortear(0.2, 1, origem, origem / "re")
+    sorteadas = registro["planilhas"]["rag"]["sorteadas"]
+    assert registro["planilhas"]["rag"]["candidatas"] == 10
+    assert len(sorteadas) == 2 and "1" not in sorteadas
+    assert sorteadas == reanotacao.sortear_ids(linhas, 0.2, 1)  # reprodutível pela semente
+    nova = _ler_planilha(origem / "re" / "rag.csv")
+    assert [l["id"] for l in nova] == sorteadas
+    assert all(l["rotulo"] == "" for l in nova)  # a primeira rodada não vai junto
+    with pytest.raises(FileExistsError):
+        reanotacao.sortear(0.2, 1, origem, origem / "re")
+
+
+def test_concordancia_entre_rodadas(tmp_path):
+    origem = tmp_path / "f"
+    origem.mkdir()
+    _gravar(origem / "rag.csv", [{"id": str(i), "rotulo": r} for i, r in enumerate("SSNP", start=1)])
+    (origem / "re").mkdir()
+    _gravar(origem / "re" / "rag.csv", [{"id": "1", "rotulo": "s"}, {"id": "3", "rotulo": "N"}, {"id": "4", "rotulo": "N"}])
+    rag, todos = reanotacao.concordancia(origem, origem / "re")
+    assert rag["frases"] == 3
+    assert rag["concordancia_%"] == pytest.approx(66.7)
+    assert rag["discordancias"] == "P→N (1)"
+    assert todos["metodo"] == "todos"

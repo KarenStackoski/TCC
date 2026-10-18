@@ -1,5 +1,5 @@
 metodo,palavras,frases,palavras_por_frase,silabas_por_palavra,flesch_pt,faixa_flesch,secoes_nivel2,cabecalhos,saltos_de_nivel,itens_de_lista,cobertura_explicita_%,texto_citado_%,bertscore_p,bertscore_r,bertscore_f1
-templating,2229,197,11.31,2.345,38.93,difícil,4,30,0,60,100.0,,0.7952,0.8824,0.8365
-rag,600,41,14.63,2.268,42.08,difícil,10,11,0,6,46.9,78.0,0.8014,0.7799,0.7905
-hibrido,1159,74,15.66,2.309,37.61,difícil,4,27,0,15,100.0,89.2,0.7839,0.8131,0.7982
-manual,978,69,14.17,2.362,34.63,difícil,7,8,0,10,18.8,,,,
+templating,2229,197,11.31,2.345,38.93,difícil,4,30,0,60,100.0,,0.7936,0.8859,0.8372
+rag,600,41,14.63,2.268,42.08,difícil,10,11,0,6,46.9,78.0,0.803,0.7844,0.7936
+hibrido,1159,74,15.66,2.309,37.61,difícil,4,27,0,15,100.0,89.2,0.7851,0.8174,0.8009
+manual,966,68,14.21,2.359,34.83,difícil,7,8,0,10,18.8,,,,

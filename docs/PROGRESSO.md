@@ -380,3 +380,24 @@ registrada para a Etapa 2. Detalhamento completo em
 - Conferir nas fontes originais as referências novas (Arcuri e Briand,
   2011; Mann e Whitney, 1947; Vargha e Delaney, 2000; Holm, 1979; Virtanen
   et al., 2020; Wohlin et al., 2012).
+
+### Preparação da anotação de fidelidade (2026-10-18)
+
+- Planilhas refeitas (nenhuma tinha anotação) e criada a do manual humano.
+  Novas colunas: `secao` (contexto), `fonte_declarada` (pista: chave ou
+  código na frase ou no título da seção, nome do artefato na frase,
+  citações do Command R) e rótulo `-` pré-preenchido em títulos, sumário e
+  na linha de identificação da etapa. As frases continuam idênticas às das
+  métricas de texto (conferido nos 34 manuais).
+- `artefatos_referencia.md`: os 32 artefatos por extenso, para consulta.
+- Guia de anotação: `docs/evaluation/02_guia_fidelidade.md`.
+- Correção: `limpar_markdown` não tirava comentários HTML. O comentário do
+  sumário do manual humano contava como frase. Agora o manual humano tem
+  966 palavras, 68 frases e Flesch 34,83 (antes 978, 69 e 34,63). Os outros
+  manuais não mudaram.
+- A anotação em si fica com a autora: cerca de 300 frases, 2 a 3 horas.
+- `reanotacao.py` (novo): `sortear` (20% das frases anotadas de cada
+  manual, semente registrada, só depois da 1ª rodada completa) e
+  `concordancia` (concordância simples e kappa de Cohen entre as rodadas,
+  faixas de Landis e Koch). Procedimento na seção 8 do guia. O relatório
+  ganha uma seção quando `reanotacao/concordancia.csv` existir.

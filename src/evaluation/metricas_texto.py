@@ -51,32 +51,65 @@ def separar_citacoes(texto: str) -> tuple[str, str]:
     return corpo, texto[posicao:]
 
 
-def limpar_markdown(texto: str) -> str:
-    """Tira a marcação Markdown e o rodapé de citações, deixando só a prosa
-    que o leitor lê — é sobre ela que legibilidade e BERTScore se aplicam."""
+def citacoes(texto: str) -> list[tuple[str, list[str]]]:
+    """(trecho citado, chaves das fontes) de cada linha do rodapé."""
+    _, rodape = separar_citacoes(texto)
+    return [
+        (c.group("texto"), re.findall(r"SCRUM-\d+", c.group("fontes"))) for c in _LINHA_CITACAO.finditer(rodape)
+    ]
+
+
+def corpo_visivel(texto: str) -> str:
+    """Corpo do manual sem o rodapé de citações e sem comentários HTML
+    (`<!-- ... -->`), que não aparecem para o leitor."""
     corpo, _ = separar_citacoes(texto)
-    linhas = []
-    for linha in corpo.splitlines():
-        linha = linha.strip()
-        if re.fullmatch(r"[-*_|: ]{3,}", linha):  # régua horizontal ou separador de tabela
-            continue
-        linha = re.sub(r"^#{1,6}\s*", "", linha)  # cabeçalhos
-        linha = re.sub(r"^>\s*", "", linha)  # citação em bloco
-        linha = re.sub(r"^([-*+]|\d+[.)])\s+", "", linha)  # itens de lista
-        linha = re.sub(r"!?\[([^\]]*)\]\([^)]*\)", r"\1", linha)  # links e imagens
-        linha = re.sub(r"`([^`]*)`", r"\1", linha)
-        linha = re.sub(r"(\*\*|__|\*|_)(.+?)\1", r"\2", linha)  # ênfase
-        linha = linha.replace("|", " ")
-        # Título/cabeçalho sem pontuação final vira frase própria.
-        if linha and linha[-1] not in ".!?:;…":
-            linha += "."
-        linhas.append(linha)
-    return "\n".join(linhas).strip()
+    return re.sub(r"<!--.*?-->", "", corpo, flags=re.DOTALL)
+
+
+def limpar_linha(linha: str) -> str | None:
+    """Uma linha do corpo sem marcação Markdown. None = linha descartada
+    (régua horizontal ou separador de tabela)."""
+    linha = linha.strip()
+    if re.fullmatch(r"[-*_|: ]{3,}", linha):
+        return None
+    linha = re.sub(r"^#{1,6}\s*", "", linha)  # cabeçalhos
+    linha = re.sub(r"^>\s*", "", linha)  # citação em bloco
+    linha = re.sub(r"^([-*+]|\d+[.)])\s+", "", linha)  # itens de lista
+    linha = re.sub(r"!?\[([^\]]*)\]\([^)]*\)", r"\1", linha)  # links e imagens
+    linha = re.sub(r"`([^`]*)`", r"\1", linha)
+    linha = re.sub(r"(\*\*|__|\*|_)(.+?)\1", r"\2", linha)  # ênfase
+    linha = linha.replace("|", " ")
+    # Título/cabeçalho sem pontuação final vira frase própria.
+    if linha and linha[-1] not in ".!?:;…":
+        linha += "."
+    return linha
+
+
+def limpar_markdown(texto: str) -> str:
+    """Tira a marcação Markdown, os comentários HTML e o rodapé de citações,
+    deixando só a prosa que o leitor lê — é sobre ela que legibilidade e
+    BERTScore se aplicam."""
+    linhas = (limpar_linha(linha) for linha in corpo_visivel(texto).splitlines())
+    return "\n".join(linha for linha in linhas if linha is not None).strip()
+
+
+def dividir_frases_com_posicao(texto_limpo: str) -> list[tuple[str, int]]:
+    """(frase, posição do primeiro caractere dela em `texto_limpo`)."""
+    frases = []
+    inicio = 0
+    for separador in [*_FIM_DE_FRASE.finditer(texto_limpo), None]:
+        fim = separador.start() if separador else len(texto_limpo)
+        trecho = texto_limpo[inicio:fim]
+        frase = trecho.strip()
+        if _PALAVRA.search(frase):
+            frases.append((frase, inicio + len(trecho) - len(trecho.lstrip())))
+        if separador:
+            inicio = separador.end()
+    return frases
 
 
 def dividir_frases(texto_limpo: str) -> list[str]:
-    frases = [f.strip() for f in _FIM_DE_FRASE.split(texto_limpo)]
-    return [f for f in frases if _PALAVRA.search(f)]
+    return [frase for frase, _ in dividir_frases_com_posicao(texto_limpo)]
 
 
 def palavras(texto: str) -> list[str]:

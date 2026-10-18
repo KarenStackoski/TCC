@@ -34,36 +34,135 @@ import argparse
 import csv
 import json
 import re
+from bisect import bisect_right
 from pathlib import Path
 
+from src.common.schema import Artefato
 from src.evaluation.manuais import MANUAIS_PADRAO
-from src.evaluation.metricas_texto import dividir_frases, limpar_markdown
+from src.evaluation.metricas_texto import (
+    artefatos_mencionados,
+    citacoes,
+    corpo_visivel,
+    dividir_frases_com_posicao,
+    limpar_linha,
+)
 from src.jira.extractor import parse_issues
+from src.rag.indexer import artefato_para_texto
 
 FIDELIDADE_DIR = Path("data/evaluation/fidelidade")
 ROTULOS = {"S", "P", "N", "-"}
-CAMPOS = ["id", "frase", "rotulo", "artefatos", "observacao"]
+CAMPOS = ["id", "secao", "frase", "rotulo", "artefatos", "fonte_declarada", "observacao"]
+PRE_PREENCHIDO = "pré-preenchido"
+
+_CABECALHO = re.compile(r"^(#{1,6})\s+(.*)$")
+# Linhas sem conteúdo verificável: item de lista que é só um link (sumário)
+# e a linha que a Etapa 1/3 escreve no topo do manual.
+_SO_LINK = re.compile(r"^[-*+]\s+\[[^\]]*\]\([^)]*\)$")
+_LINHA_ETAPA = re.compile(r"^_Documento gerado automaticamente.*_$")
 
 
-def preparar(manuais: dict[str, str], saida_dir: Path = FIDELIDADE_DIR) -> dict[str, int]:
-    """Uma planilha por método, uma frase por linha. Não sobrescreve uma
-    planilha que já exista (para não apagar anotação feita)."""
+def frases_para_anotar(texto: str, artefatos: list[Artefato]) -> list[dict]:
+    """As mesmas frases que `dividir_frases(limpar_markdown(texto))`, cada uma
+    com a seção onde está, o rótulo "-" já preenchido quando ela é título,
+    item de sumário ou a linha de identificação da etapa, e a
+    `fonte_declarada`: os artefatos que a própria frase menciona (chave,
+    código ou nome, como na cobertura explícita), os que o título da seção
+    dela menciona por chave ou código, e as fontes que o Command R declarou
+    para trechos dela. É só uma pista para a anotação, não um rótulo."""
+    linhas = corpo_visivel(texto).splitlines()
+    limpas: list[str] = []
+    meta: list[dict] = []
+    caminho: dict[int, str] = {}
+    for linha in linhas:
+        crua = linha.strip()
+        cabecalho = _CABECALHO.match(crua)
+        secao = " > ".join(caminho[n] for n in sorted(caminho) if n > 1)
+        if cabecalho:
+            nivel = len(cabecalho.group(1))
+            caminho = {n: t for n, t in caminho.items() if n < nivel}
+            caminho[nivel] = limpar_linha(cabecalho.group(2)).rstrip(".")
+        limpa = limpar_linha(linha)
+        if limpa is None:
+            continue
+        limpas.append(limpa)
+        meta.append(
+            {
+                "secao": secao,
+                "titulo_da_secao": caminho[max(caminho)] if caminho and not cabecalho else "",
+                "nao_verificavel": bool(cabecalho or _SO_LINK.match(crua) or _LINHA_ETAPA.match(crua)),
+            }
+        )
+
+    inicios, posicao = [], 0
+    for limpa in limpas:
+        inicios.append(posicao)
+        posicao += len(limpa) + 1
+    trechos_citados = citacoes(texto)
+
+    saida = []
+    for frase, inicio in dividir_frases_com_posicao("\n".join(limpas)):
+        m = meta[bisect_right(inicios, inicio) - 1]
+        na_frase = artefatos_mencionados(frase, artefatos)
+        no_titulo = artefatos_mencionados(m["titulo_da_secao"], artefatos)
+        fontes = {chave for chave, forma in na_frase.items() if forma}
+        # Do título da seção, só chave ou código: o nome sozinho ("Pagamentos")
+        # é o de um épico e apontaria o épico para todas as frases da seção.
+        fontes |= {chave for chave, forma in no_titulo.items() if forma in ("chave", "codigo")}
+        fontes |= {chave for trecho, chaves in trechos_citados if trecho in frase for chave in chaves}
+        saida.append(
+            {
+                "secao": m["secao"],
+                "frase": frase,
+                "rotulo": "-" if m["nao_verificavel"] else "",
+                "fonte_declarada": ", ".join(sorted(fontes, key=lambda c: int(c.split("-")[1]))),
+                "observacao": f"{PRE_PREENCHIDO}: título ou navegação" if m["nao_verificavel"] else "",
+            }
+        )
+    return saida
+
+
+def _tem_anotacao(planilha: Path) -> bool:
+    """Alguma célula de anotação preenchida pela pessoa (o pré-preenchimento
+    automático não conta)."""
+    with open(planilha, newline="", encoding="utf-8-sig") as arquivo:
+        for linha in csv.DictReader(arquivo):
+            if (linha.get("observacao") or "").startswith(PRE_PREENCHIDO):
+                continue
+            if any((linha.get(c) or "").strip() for c in ("rotulo", "artefatos", "observacao")):
+                return True
+    return False
+
+
+def escrever_referencia(artefatos: list[Artefato], destino: Path) -> None:
+    """Os 32 artefatos por extenso, para consultar durante a anotação."""
+    ordenados = sorted(artefatos, key=lambda a: int(a.chave.split("-")[1]))
+    partes = ["# Artefatos de origem (data/raw/data.json)", ""]
+    for artefato in ordenados:
+        partes += [f"## {artefato.chave} — {artefato.titulo}", "", artefato_para_texto(artefato), ""]
+    destino.write_text("\n".join(partes), encoding="utf-8")
+
+
+def preparar(manuais: dict[str, str], artefatos: list[Artefato], saida_dir: Path = FIDELIDADE_DIR) -> dict[str, int]:
+    """Uma planilha por método, uma frase por linha, mais a referência dos
+    artefatos. Não sobrescreve uma planilha que já tenha anotação. O CSV é
+    gravado em UTF-8 com BOM para o Excel reconhecer os acentos."""
     saida_dir.mkdir(parents=True, exist_ok=True)
+    escrever_referencia(artefatos, saida_dir / "artefatos_referencia.md")
     contagem: dict[str, int] = {}
     for metodo, caminho in manuais.items():
         if not Path(caminho).exists():
             print(f"Aviso: {caminho} não encontrado; {metodo} fica de fora.")
             continue
         destino = saida_dir / f"{metodo}.csv"
-        if destino.exists():
-            print(f"{destino} já existe; mantido sem alteração.")
+        if destino.exists() and _tem_anotacao(destino):
+            print(f"{destino} já tem anotação; mantido sem alteração.")
             continue
-        frases = dividir_frases(limpar_markdown(Path(caminho).read_text(encoding="utf-8")))
-        with open(destino, "w", newline="", encoding="utf-8") as arquivo:
-            escritor = csv.writer(arquivo)
-            escritor.writerow(CAMPOS)
+        frases = frases_para_anotar(Path(caminho).read_text(encoding="utf-8"), artefatos)
+        with open(destino, "w", newline="", encoding="utf-8-sig") as arquivo:
+            escritor = csv.DictWriter(arquivo, fieldnames=CAMPOS)
+            escritor.writeheader()
             for indice, frase in enumerate(frases, start=1):
-                escritor.writerow([indice, frase, "", "", ""])
+                escritor.writerow({"id": indice, "artefatos": "", **frase})
         contagem[metodo] = len(frases)
     return contagem
 
@@ -109,12 +208,15 @@ def main() -> None:
     sub = parser.add_subparsers(dest="comando", required=True)
     p_preparar = sub.add_parser("preparar")
     p_preparar.add_argument("--manual-humano", default=MANUAIS_PADRAO["manual"])
+    p_preparar.add_argument("--entrada", default="data/raw/data.json")
     p_analisar = sub.add_parser("analisar")
     p_analisar.add_argument("--entrada", default="data/raw/data.json")
     args = parser.parse_args()
 
     if args.comando == "preparar":
-        contagem = preparar(dict(MANUAIS_PADRAO, manual=args.manual_humano))
+        with open(args.entrada, encoding="utf-8") as arquivo:
+            artefatos = parse_issues(json.load(arquivo)["issues"])
+        contagem = preparar(dict(MANUAIS_PADRAO, manual=args.manual_humano), artefatos)
         for metodo, n in contagem.items():
             print(f"{metodo}: {n} frases para anotar em {FIDELIDADE_DIR / (metodo + '.csv')}")
         return

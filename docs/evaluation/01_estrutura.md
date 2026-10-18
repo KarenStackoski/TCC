@@ -111,8 +111,9 @@ rodam para os outros três métodos, e o BERTScore não é calculado.
   alguns hiatos não são separados (ex.: "usu-á-rio" conta 3 sílabas em vez
   de 4). O erro é pequeno e igual para todos os métodos, então não afeta a
   comparação entre eles.
-- **Texto analisado:** só a prosa. A marcação Markdown e o rodapé de
-  citações saem, e títulos sem ponto final contam como frase própria.
+- **Texto analisado:** só a prosa. A marcação Markdown, os comentários
+  HTML (`<!-- … -->`, que o leitor não vê) e o rodapé de citações saem, e
+  títulos sem ponto final contam como frase própria.
 - **Estrutura:** contagem de cabeçalhos por nível, seções de nível 2,
   itens de lista, linhas de tabela e "saltos de nível" (ex.: `##` seguido
   de `####`), que quebram a hierarquia. Fonte: W3C, WCAG 2.2, técnica
@@ -137,8 +138,12 @@ rodam para os outros três métodos, e o BERTScore não é calculado.
   do corpo cobertos por algum trecho que o Command R citou. Mede
   rastreabilidade (quanto do texto aponta para uma fonte), não correção.
   Fonte: Cohere, "Retrieval Augmented Generation (RAG)".
-- **Recomendação:** se possível, uma segunda pessoa anota uma parte das
-  frases, para medir a concordância da anotação (van der Lee et al., 2021).
+- **Regras de anotação:** em `02_guia_fidelidade.md`: rótulos, regras de
+  decisão (status dos artefatos, melhorias, bugs, números), o tipo de erro
+  (intrínseco ou extrínseco) e a pista `fonte_declarada` das planilhas.
+- **Consistência:** a anotação é de uma pessoa só. Sem segundo anotador,
+  dá para reanotar uma amostra depois de um tempo e medir a concordância
+  intra-anotador com o kappa de Cohen (`reanotacao.py`; guia, seção 8).
 
 ## 5. BERTScore (`bertscore.py`)
 
@@ -297,6 +302,10 @@ python -m src.evaluation.benchmark --repeticoes 10   # já rodado em 2026-09-27
 # 3. Fidelidade: gera as planilhas; anotar; depois analisar
 python -m src.evaluation.fidelidade preparar
 python -m src.evaluation.fidelidade analisar
+#    Reanotação (concordância intra-anotador): sortear só com a 1ª rodada
+#    completa; reanotar depois de 7 dias (guia, seção 8)
+python -m src.evaluation.reanotacao sortear --fracao 0.2 --semente 2026
+python -m src.evaluation.reanotacao concordancia
 
 # 4. LLM como juiz
 python -m src.evaluation.juiz_llm               # 1 manual por método (4 chamadas)

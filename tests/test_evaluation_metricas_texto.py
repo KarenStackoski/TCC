@@ -32,6 +32,16 @@ def test_limpar_markdown_tira_marcacao_e_fecha_titulos():
     assert "Pix e cartão." in limpo
 
 
+def test_limpar_markdown_tira_comentario_html():
+    limpo = mt.limpar_markdown("## A\n\n<!-- nota\nem duas linhas -->\nTexto.")
+    assert mt.dividir_frases(limpo) == ["A.", "Texto."]
+
+
+def test_dividir_frases_com_posicao():
+    texto = "Uma frase. Outra.\n\nTítulo."
+    assert mt.dividir_frases_com_posicao(texto) == [("Uma frase.", 0), ("Outra.", 11), ("Título.", 19)]
+
+
 def test_contar_silabas():
     assert mt.contar_silabas("restaurante") == 4
     assert mt.contar_silabas("pedido") == 3

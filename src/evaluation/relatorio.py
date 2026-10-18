@@ -251,6 +251,14 @@ def main() -> None:
     )
     md += _tabela_md("Variação entre execuções", var)
     md += _tabela_md("Fidelidade e cobertura de conteúdo (anotação)", _ler_csv(AVALIACAO_DIR / "fidelidade" / "resultado.csv"))
+    concordancia_fidelidade = _ler_csv(AVALIACAO_DIR / "fidelidade" / "reanotacao" / "concordancia.csv")
+    if concordancia_fidelidade:
+        md += _tabela_md(
+            "Concordância intra-anotador da fidelidade",
+            concordancia_fidelidade,
+            "Rótulos da primeira rodada × reanotação de uma amostra sorteada; kappa de Cohen, "
+            "faixas de Landis e Koch (1977).",
+        )
     md += _tabela_md("LLM como juiz (1 a 5)", _ler_csv(AVALIACAO_DIR / "juiz_llm" / "resultado.csv"))
     md += _tabela_md(
         "LLM como juiz sobre todas as execuções (1 a 5)",
