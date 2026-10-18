@@ -1,0 +1,39 @@
+{
+  "arquivo": "data/evaluation/execucoes/hibrido/execucao_02.md",
+  "sha256": "7ce6017b7b65c7f417eb3eb2c373cea775e0636d30458e7e98cf0c8c93deef92",
+  "modelo_juiz": "command-a-03-2025",
+  "avaliacao": {
+    "clareza": {
+      "justificativa": "O manual utiliza linguagem simples e direta, com explicações claras sobre as funcionalidades e tarefas. As seções são bem definidas e os títulos ajudam a guiar o leitor.",
+      "nota": 4
+    },
+    "coerencia": {
+      "justificativa": "A organização do manual segue uma estrutura lógica, começando com uma visão geral, passando por funcionalidades específicas e terminando com tarefas operacionais e problemas conhecidos. No entanto, a seção 'Tarefas Operacionais' parece um pouco deslocada, pois mistura melhorias futuras com funcionalidades atuais.",
+      "nota": 3
+    },
+    "completude": {
+      "justificativa": "O manual cobre a maioria das funcionalidades e problemas listados nos artefatos de origem, mas falta detalhar alguns critérios de aceitação e não menciona epics como 'EP-06 - Avaliações' e 'EP-05 - Rastreamento de Entrega' de forma completa.",
+      "nota": 3
+    },
+    "correcao": {
+      "justificativa": "O texto está bem escrito, com gramática e ortografia corretas. Não foram encontrados erros significativos.",
+      "nota": 5
+    },
+    "utilidade": {
+      "justificativa": "O manual fornece informações suficientes para que um usuário entenda e utilize o sistema, mas poderia ser mais detalhado em algumas áreas, como os critérios de aceitação e o funcionamento de algumas funcionalidades.",
+      "nota": 4
+    },
+    "afirmacoes_nao_sustentadas": [
+      "A funcionalidade de Autenticação e Cadastro é a porta de entrada do aplicativo, impactando diretamente a experiência inicial do usuário. Ela agrupa todas as funcionalidades relacionadas ao acesso do usuário à plataforma, incluindo criação de conta, login, recuperação de senha e gerenciamento de perfil.",
+      "O Catálogo de Restaurantes abrange a exibição, busca e filtragem de restaurantes e seus cardápios. O usuário pode encontrar facilmente o que deseja pedir, com informações claras sobre tempo de entrega, taxa de frete e avaliações.",
+      "O Carrinho e Pedidos é o núcleo do aplicativo, cobrindo todo o fluxo desde a adição de itens ao carrinho até a confirmação e acompanhamento do pedido. É onde a conversão de interesse em compra acontece.",
+      "A funcionalidade de Pagamentos é responsável por todas as formas de pagamento disponíveis na plataforma, garantindo segurança, praticidade e variedade de métodos para o usuário finalizar a compra.",
+      "O Rastreamento de Entrega permite ao usuário acompanhar em tempo real onde está o seu pedido, desde a saída do restaurante até a chegada na porta.",
+      "As Avaliações permitem que o usuário expresse sua experiência com o restaurante e o entregador após a conclusão do pedido, gerando dados de qualidade para a plataforma.",
+      "O app atualmente só suporta tema claro, mas a melhoria consiste em implementar suporte a modo escuro, seguindo as diretrizes de design do sistema operacional (Android e iOS), com detecção automática da preferência do sistema e opção manual de alternar nas configurações do app.",
+      "Hoje o usuário precisa digitar o endereço de entrega em cada novo pedido. A melhoria consiste em salvar automaticamente o último endereço utilizado e pré-preencher o campo no próximo checkout, com opção de alterar.",
+      "Quando o usuário abre o app sem conexão com a internet, é exibida uma mensagem técnica de timeout após vários segundos de espera. A melhoria consiste em detectar a ausência de conexão imediatamente e exibir uma tela amigável com ícone, mensagem clara e botão 'Tentar novamente', sem aguardar o timeout da requisição.",
+      "Atualmente, ao carregar a lista de restaurantes ou o cardápio, a tela exibe um spinner centralizado enquanto os dados são buscados. A melhoria consiste em substituir esse spinner por skeleton screens (placeholders animados no formato dos cards reais), reduzindo a percepção de tempo de carregamento e melhorando a experiência visual."
+    ]
+  }
+}

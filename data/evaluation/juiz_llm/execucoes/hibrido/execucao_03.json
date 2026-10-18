@@ -1,0 +1,28 @@
+{
+  "arquivo": "data/evaluation/execucoes/hibrido/execucao_03.md",
+  "sha256": "90564344a76c29dad5df374474c289a7fa35a7753165738dd5c85308c411a64f",
+  "modelo_juiz": "command-a-03-2025",
+  "avaliacao": {
+    "clareza": {
+      "justificativa": "O manual utiliza linguagem clara e direta, com explicações detalhadas sobre cada funcionalidade e problema. As frases são bem estruturadas e evitam ambiguidades.",
+      "nota": 5
+    },
+    "coerencia": {
+      "justificativa": "A organização do manual segue uma lógica clara, começando com uma visão geral, passando por funcionalidades, tarefas operacionais e problemas conhecidos. Cada seção se encadeia de forma coerente.",
+      "nota": 5
+    },
+    "completude": {
+      "justificativa": "O manual cobre todas as funcionalidades principais, tarefas operacionais e problemas conhecidos mencionados nos artefatos de origem. No entanto, não aborda aspectos como acessibilidade ou suporte ao usuário.",
+      "nota": 4
+    },
+    "correcao": {
+      "justificativa": "O texto está correto em gramática e ortografia, sem erros aparentes. As informações apresentadas parecem precisas e alinhadas com os artefatos de origem.",
+      "nota": 5
+    },
+    "utilidade": {
+      "justificativa": "O manual fornece informações suficientes para que um usuário consiga utilizar o sistema de forma eficaz, incluindo detalhes sobre funcionalidades, problemas conhecidos e como lidar com eles.",
+      "nota": 5
+    },
+    "afirmacoes_nao_sustentadas": []
+  }
+}

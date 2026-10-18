@@ -1,7 +1,6 @@
 """Testes das partes determinísticas dos módulos de avaliação — sem chamar
 API nem baixar modelo."""
 
-import csv
 from types import SimpleNamespace
 
 import cohere
@@ -9,12 +8,13 @@ import pytest
 import torch
 
 from src.common.schema import Artefato
-from src.evaluation import avaliacao_humana as ah
-from src.evaluation import fidelidade
+from src.evaluation import estatistica, fidelidade
 from src.evaluation.benchmark import resumir
 from src.evaluation.bertscore import pontuar_embeddings
-from src.evaluation.juiz_llm import montar_prompt, validar
+from src.evaluation.juiz_llm import CRITERIOS, arquivos_das_execucoes, montar_prompt, validar
+from src.evaluation.manuais import anonimizar
 from src.evaluation.medicao import RegistroChamadas
+from src.evaluation.relatorio import dados_por_execucao, resumo_juiz
 from src.evaluation.variacao import similaridade, variacao
 
 # --- medicao -----------------------------------------------------------------
@@ -103,7 +103,7 @@ def test_pontuar_embeddings_precisao_e_revocacao():
     assert bs.f1 == pytest.approx(2 * 0.5 / 1.5, abs=1e-4)
 
 
-# --- avaliacao humana --------------------------------------------------------
+# --- manuais ------------------------------------------------------------------
 
 
 def test_anonimizar_tira_rodape_e_linha_da_etapa():
@@ -111,57 +111,10 @@ def test_anonimizar_tira_rodape_e_linha_da_etapa():
         "# Manual\n\n_Documento gerado automaticamente — Etapa 1 do TCC._\n\n## A\n\nx"
         '\n\n---\n\n**Citações (Cohere Command R):**\n- "x" — fonte(s): SCRUM-1'
     )
-    anonimo = ah.anonimizar(texto)
+    anonimo = anonimizar(texto)
     assert "Etapa 1" not in anonimo
     assert "Citações" not in anonimo
     assert anonimo == "# Manual\n\n## A\n\nx\n"
-
-
-def test_sortear_letras_e_reprodutivel():
-    metodos = ["hibrido", "manual", "rag", "templating"]
-    assert ah.sortear_letras(metodos, 7) == ah.sortear_letras(metodos, 7)
-    assert sorted(ah.sortear_letras(metodos, 7).values()) == metodos
-
-
-def test_preparar_e_analisar(tmp_path):
-    manuais = {}
-    for metodo in ("rag", "templating"):
-        caminho = tmp_path / f"{metodo}.md"
-        caminho.write_text(f"# {metodo}", encoding="utf-8")
-        manuais[metodo] = str(caminho)
-    manuais["manual"] = str(tmp_path / "nao_existe.md")
-
-    gabarito = ah.preparar(manuais, semente=1, saida_dir=tmp_path / "av")
-    assert sorted(gabarito.values()) == ["rag", "templating"]
-    assert (tmp_path / "av" / "manuais" / "manual_A.md").exists()
-
-    criterios = list(ah.CRITERIOS)
-    for avaliador, notas in (("ana", {"A": 5, "B": 2}), ("bia", {"A": 4, "B": 2})):
-        with open(tmp_path / "av" / "respostas" / f"{avaliador}.csv", "w", newline="", encoding="utf-8") as f:
-            w = csv.writer(f)
-            w.writerow(["avaliador", "manual", *criterios, "comentario"])
-            for letra, nota in notas.items():
-                w.writerow([avaliador, letra, *[nota] * len(criterios), ""])
-
-    resumo, concordancia = ah.analisar(tmp_path / "av")
-    por_letra = {linha["manual"]: linha for linha in resumo}
-    assert por_letra["A"]["clareza_media"] == 4.5
-    assert por_letra["B"]["clareza_mediana"] == 2.0
-    assert concordancia["avaliadores"] == 2
-    assert -1.0 <= concordancia["alfa_krippendorff_ordinal"] <= 1.0
-
-
-def test_alfa_com_concordancia_perfeita_e_1():
-    respostas = [
-        {"avaliador": a, "manual": m, "clareza": n}
-        for a in ("x", "y")
-        for m, n in (("A", "1"), ("B", "3"), ("C", "5"))
-    ]
-    assert ah.alfa_ordinal(respostas, ["clareza"]) == pytest.approx(1.0)
-
-
-def test_alfa_com_um_avaliador_e_none():
-    assert ah.alfa_ordinal([{"avaliador": "x", "manual": "A", "clareza": "3"}], ["clareza"]) is None
 
 
 # --- fidelidade --------------------------------------------------------------
@@ -206,14 +159,98 @@ def test_montar_prompt_do_juiz_inclui_fontes_manual_e_criterios():
     prompt = montar_prompt("# Manual", [artefato])
     assert prompt.index("<artefatos_de_origem>") < prompt.index("<manual>")
     assert "SCRUM-1" in prompt
-    for criterio in ah.CRITERIOS:
+    for criterio in CRITERIOS:
         assert criterio in prompt
 
 
 def test_validar_recusa_nota_fora_da_escala():
-    resposta = {c: {"justificativa": "", "nota": 3} for c in ah.CRITERIOS}
+    resposta = {c: {"justificativa": "", "nota": 3} for c in CRITERIOS}
     resposta["afirmacoes_nao_sustentadas"] = []
     assert validar(resposta) is resposta
     resposta["clareza"]["nota"] = 7
     with pytest.raises(ValueError):
         validar(resposta)
+
+
+def test_arquivos_das_execucoes_inclui_manual_humano(tmp_path):
+    for metodo in ("rag", "templating"):
+        (tmp_path / metodo).mkdir()
+        for n in (2, 1):
+            (tmp_path / metodo / f"execucao_{n:02d}.md").write_text("x", encoding="utf-8")
+    humano = tmp_path / "manual.md"
+    humano.write_text("x", encoding="utf-8")
+    arquivos = arquivos_das_execucoes(tmp_path, str(humano))
+    assert [(m, n) for m, n, _ in arquivos] == [
+        ("templating", 1), ("templating", 2), ("rag", 1), ("rag", 2), ("manual", 1)
+    ]
+    assert len(arquivos_das_execucoes(tmp_path, str(tmp_path / "nao_existe.md"))) == 4
+
+
+# --- estatistica -------------------------------------------------------------
+
+
+def test_a12_e_magnitude():
+    assert estatistica.a12([2, 3], [1, 1]) == 1.0
+    assert estatistica.a12([1, 1], [1, 1]) == 0.5
+    assert estatistica.a12([1, 2], [2, 3]) == pytest.approx(0.125)  # 1 empate em 4 pares
+    assert estatistica.magnitude(0.53) == "desprezível"
+    assert estatistica.magnitude(0.60) == "pequeno"
+    assert estatistica.magnitude(0.36) == "médio"
+    assert estatistica.magnitude(0.0) == "grande"
+
+
+def test_mann_whitney_grupos_constantes_e_iguais_da_p_1():
+    assert estatistica.mann_whitney([5.0] * 10, [5.0] * 10) == (50.0, 1.0)
+
+
+def test_mann_whitney_separacao_total():
+    # Sem empates, n = 3 x 3: p exato bilateral = 2 / C(6, 3) = 0,1.
+    u, p = estatistica.mann_whitney([1, 2, 3], [4, 5, 6])
+    assert u == 0.0
+    assert p == pytest.approx(0.1)
+
+
+def test_holm():
+    # Ordenados: 0,01·3 = 0,03; 0,02·2 = 0,04; 0,04·1 = 0,04 (monotônico).
+    assert estatistica.holm([0.04, 0.01, 0.02]) == pytest.approx([0.04, 0.03, 0.04])
+    assert estatistica.holm([0.5, 0.9]) == [1.0, 1.0]
+
+
+def test_comparar_metricas_ignora_vazios_e_metodo_com_uma_execucao():
+    linhas = (
+        [{"metodo": "templating", "t": "0.005", "citado": ""} for _ in range(10)]
+        + [{"metodo": "rag", "t": str(100 + i), "citado": "80"} for i in range(10)]
+        + [{"metodo": "hibrido", "t": str(200 + i), "citado": "90"} for i in range(10)]
+        + [{"metodo": "manual", "t": "9999", "citado": ""}]
+    )
+    resultado = estatistica.comparar_metricas(linhas, ["t", "citado"])
+    pares_t = [(r["metodo_a"], r["metodo_b"]) for r in resultado if r["metrica"] == "t"]
+    assert pares_t == [("templating", "rag"), ("templating", "hibrido"), ("rag", "hibrido")]
+    assert all(r["diferenca_significativa"] == "sim" and r["efeito"] == "grande" for r in resultado)
+    (citado,) = [r for r in resultado if r["metrica"] == "citado"]
+    assert (citado["metodo_a"], citado["metodo_b"], citado["a12"]) == ("rag", "hibrido", 0.0)
+
+
+# --- relatorio ----------------------------------------------------------------
+
+
+def test_dados_por_execucao_junta_benchmark_e_juiz():
+    individuais = [
+        {"metodo": "rag", "execucao": "1", "tempo_total_s": "100", "tokens_entrada": "7", "tokens_saida": "3",
+         "palavras": 10, "flesch_pt": 40, "cobertura_explicita_%": 50, "texto_citado_%": 80}
+    ]
+    notas = {c: "4" for c in CRITERIOS} | {"afirmacoes_nao_sustentadas": "1"}
+    juiz = [{"metodo": "rag", "execucao": "1", **notas}, {"metodo": "manual", "execucao": "1", **notas}]
+    dados = dados_por_execucao(individuais, juiz)
+    assert dados[0]["tokens_total"] == 10
+    assert dados[0]["clareza"] == "4"
+    assert dados[1] == {"metodo": "manual", **notas}
+
+
+def test_resumo_juiz_mediana_e_faixa():
+    linhas = [
+        {"metodo": "rag", **{c: str(n) for c in CRITERIOS}, "afirmacoes_nao_sustentadas": "0"} for n in (3, 4, 5)
+    ]
+    (item,) = resumo_juiz(linhas)
+    assert item["execucoes"] == 3
+    assert item["clareza"] == "4 (3–5)"

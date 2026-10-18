@@ -1,13 +1,13 @@
 # Resultados da avaliação
 
-Gerado por `python -m src.evaluation.relatorio` em 2026-09-27T19:39:39-03:00.
+Gerado por `python -m src.evaluation.relatorio` em 2026-10-18T20:09:18-03:00.
 Métodos e fontes de cada métrica: `docs/evaluation/01_estrutura.md`.
 
-Manuais avaliados nas seções de métricas automáticas, fidelidade, avaliação humana e juiz:
+Manuais avaliados nas seções de métricas automáticas, fidelidade e juiz (1 manual por método):
 - templating: `data/manuals_generated/templating/manual.md`
 - rag: `data/manuals_generated/rag/manual_cohere.md`
 - hibrido: `data/manuals_generated/hybrid/manual_cohere.md`
-- manual: `data/manuals_generated/manual/manual.md` (ainda não existe)
+- manual: `data/manuals_generated/manual/manual.md`
 
 ## Tempo de geração — resumo (s)
 
@@ -66,21 +66,20 @@ Uma execução em que alguma chamada à API passou do tempo limite do SDK (300 s
 
 ## Tempo do método manual (min)
 
-| etapa | minutos |
-|---|---|
-| leitura |  |
-| escrita |  |
-| revisao |  |
+| etapa | minutos | cronometro |
+|---|---|---|
+| total | 21.86 | 21:51.56 |
 
 ## Métricas automáticas
 
 BERTScore em relação ao manual humano (sem reescalonamento). Cobertura explícita = artefatos citados por chave, código ou título.
 
-| metodo | palavras | frases | palavras_por_frase | silabas_por_palavra | flesch_pt | faixa_flesch | secoes_nivel2 | cabecalhos | saltos_de_nivel | itens_de_lista | cobertura_explicita_% | texto_citado_% |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| templating | 2229 | 197 | 11.31 | 2.345 | 38.93 | difícil | 4 | 30 | 0 | 60 | 100.0 |  |
-| rag | 600 | 41 | 14.63 | 2.268 | 42.08 | difícil | 10 | 11 | 0 | 6 | 46.9 | 78.0 |
-| hibrido | 1159 | 74 | 15.66 | 2.309 | 37.61 | difícil | 4 | 27 | 0 | 15 | 100.0 | 89.2 |
+| metodo | palavras | frases | palavras_por_frase | silabas_por_palavra | flesch_pt | faixa_flesch | secoes_nivel2 | cabecalhos | saltos_de_nivel | itens_de_lista | cobertura_explicita_% | texto_citado_% | bertscore_p | bertscore_r | bertscore_f1 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| templating | 2229 | 197 | 11.31 | 2.345 | 38.93 | difícil | 4 | 30 | 0 | 60 | 100.0 |  | 0.7952 | 0.8824 | 0.8365 |
+| rag | 600 | 41 | 14.63 | 2.268 | 42.08 | difícil | 10 | 11 | 0 | 6 | 46.9 | 78.0 | 0.8014 | 0.7799 | 0.7905 |
+| hibrido | 1159 | 74 | 15.66 | 2.309 | 37.61 | difícil | 4 | 27 | 0 | 15 | 100.0 | 89.2 | 0.7839 | 0.8131 | 0.7982 |
+| manual | 978 | 69 | 14.17 | 2.362 | 34.63 | difícil | 7 | 8 | 0 | 10 | 18.8 |  |  |  |  |
 
 ## Variação entre execuções
 
@@ -94,10 +93,6 @@ BERTScore em relação ao manual humano (sem reescalonamento). Cobertura explíc
 
 _Ainda sem dados._
 
-## Avaliação humana (1 a 5)
-
-_Ainda sem dados._
-
 ## LLM como juiz (1 a 5)
 
 | metodo | modelo_juiz | clareza | coerencia | completude | correcao | utilidade | afirmacoes_nao_sustentadas |
@@ -105,3 +100,55 @@ _Ainda sem dados._
 | templating | command-a-03-2025 | 5 | 5 | 4 | 5 | 5 | 0 |
 | rag | command-a-03-2025 | 4 | 4 | 3 | 4 | 3 | 1 |
 | hibrido | command-a-03-2025 | 5 | 5 | 4 | 5 | 5 | 2 |
+
+## LLM como juiz sobre todas as execuções (1 a 5)
+
+Mediana (mínimo–máximo) das notas dadas a cada manual salvo pelo benchmark. As execuções do templating são idênticas: a faixa delas é o ruído do próprio juiz.
+
+| metodo | execucoes | clareza | coerencia | completude | correcao | utilidade | afirmacoes_nao_sustentadas |
+|---|---|---|---|---|---|---|---|
+| templating | 10 | 5 (5–5) | 5 (5–5) | 4 (4–4) | 5 (5–5) | 5 (4–5) | 0 (0–2) |
+| rag | 10 | 4 (3–5) | 4 (3–5) | 3 (2–4) | 4.5 (4–5) | 3 (2–4) | 2 (0–7) |
+| hibrido | 10 | 5 (4–5) | 5 (3–5) | 4 (3–4) | 5 (5–5) | 4 (3–5) | 2 (0–10) |
+| manual | 1 | 5 (5–5) | 5 (5–5) | 4 (4–4) | 5 (5–5) | 5 (5–5) | 3 (3–3) |
+
+## Comparação estatística entre os métodos
+
+U de Mann-Whitney bilateral sobre os valores de cada execução; p ajustado por Holm dentro de cada métrica; A12 = P(execução de A > execução de B). O manual humano (1 execução) fica de fora.
+
+| metrica | metodo_a | metodo_b | n_a | n_b | u | p | a12 | efeito | p_holm | diferenca_significativa |
+|---|---|---|---|---|---|---|---|---|---|---|
+| tempo_total_s | templating | rag | 10 | 10 | 0.0 | 0.0002 | 0.0 | grande | 0.0005 | sim |
+| tempo_total_s | templating | hibrido | 10 | 10 | 0.0 | 0.0002 | 0.0 | grande | 0.0005 | sim |
+| tempo_total_s | rag | hibrido | 10 | 10 | 8.0 | 0.0017 | 0.08 | grande | 0.0017 | sim |
+| tokens_total | templating | rag | 10 | 10 | 0.0 | 0.0001 | 0.0 | grande | 0.0002 | sim |
+| tokens_total | templating | hibrido | 10 | 10 | 0.0 | 0.0001 | 0.0 | grande | 0.0002 | sim |
+| tokens_total | rag | hibrido | 10 | 10 | 6.0 | 0.001 | 0.06 | grande | 0.001 | sim |
+| palavras | templating | rag | 10 | 10 | 100.0 | 0.0001 | 1.0 | grande | 0.0002 | sim |
+| palavras | templating | hibrido | 10 | 10 | 100.0 | 0.0001 | 1.0 | grande | 0.0002 | sim |
+| palavras | rag | hibrido | 10 | 10 | 0.0 | 0.0002 | 0.0 | grande | 0.0002 | sim |
+| flesch_pt | templating | rag | 10 | 10 | 50.0 | 1.0 | 0.5 | desprezível | 1.0 | não |
+| flesch_pt | templating | hibrido | 10 | 10 | 50.0 | 1.0 | 0.5 | desprezível | 1.0 | não |
+| flesch_pt | rag | hibrido | 10 | 10 | 44.0 | 0.6776 | 0.44 | pequeno | 1.0 | não |
+| cobertura_explicita_% | templating | rag | 10 | 10 | 100.0 | 0.0001 | 1.0 | grande | 0.0002 | sim |
+| cobertura_explicita_% | templating | hibrido | 10 | 10 | 55.0 | 0.3681 | 0.55 | desprezível | 0.3681 | não |
+| cobertura_explicita_% | rag | hibrido | 10 | 10 | 0.0 | 0.0001 | 0.0 | grande | 0.0002 | sim |
+| texto_citado_% | rag | hibrido | 10 | 10 | 59.5 | 0.4958 | 0.595 | pequeno | 0.4958 | não |
+| clareza | templating | rag | 10 | 10 | 95.0 | 0.0002 | 0.95 | grande | 0.0005 | sim |
+| clareza | templating | hibrido | 10 | 10 | 65.0 | 0.0767 | 0.65 | médio | 0.0767 | não |
+| clareza | rag | hibrido | 10 | 10 | 17.0 | 0.0064 | 0.17 | grande | 0.0128 | sim |
+| coerencia | templating | rag | 10 | 10 | 95.0 | 0.0002 | 0.95 | grande | 0.0006 | sim |
+| coerencia | templating | hibrido | 10 | 10 | 65.0 | 0.0776 | 0.65 | médio | 0.0776 | não |
+| coerencia | rag | hibrido | 10 | 10 | 23.0 | 0.0331 | 0.23 | grande | 0.0663 | não |
+| completude | templating | rag | 10 | 10 | 95.0 | 0.0002 | 0.95 | grande | 0.0005 | sim |
+| completude | templating | hibrido | 10 | 10 | 65.0 | 0.0767 | 0.65 | médio | 0.0767 | não |
+| completude | rag | hibrido | 10 | 10 | 17.0 | 0.0064 | 0.17 | grande | 0.0128 | sim |
+| correcao | templating | rag | 10 | 10 | 75.0 | 0.0137 | 0.75 | grande | 0.041 | sim |
+| correcao | templating | hibrido | 10 | 10 | 50.0 | 1.0 | 0.5 | desprezível | 1.0 | não |
+| correcao | rag | hibrido | 10 | 10 | 25.0 | 0.0137 | 0.25 | grande | 0.041 | sim |
+| utilidade | templating | rag | 10 | 10 | 99.0 | 0.0001 | 0.99 | grande | 0.0003 | sim |
+| utilidade | templating | hibrido | 10 | 10 | 71.0 | 0.0722 | 0.71 | médio | 0.0722 | não |
+| utilidade | rag | hibrido | 10 | 10 | 7.0 | 0.0007 | 0.07 | grande | 0.0014 | sim |
+| afirmacoes_nao_sustentadas | templating | rag | 10 | 10 | 8.5 | 0.0008 | 0.085 | grande | 0.0025 | sim |
+| afirmacoes_nao_sustentadas | templating | hibrido | 10 | 10 | 13.0 | 0.0023 | 0.13 | grande | 0.0046 | sim |
+| afirmacoes_nao_sustentadas | rag | hibrido | 10 | 10 | 53.0 | 0.8448 | 0.53 | desprezível | 0.8448 | não |

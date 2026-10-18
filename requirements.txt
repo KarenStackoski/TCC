@@ -15,7 +15,7 @@ anthropic==1.2.0
 # (~700 MB) é baixado na primeira execução de src/evaluation/bertscore.py.
 bert-score==0.3.13
 pyphen==0.18.1
-krippendorff==0.8.2
+scipy==1.18.1  # Mann-Whitney U (src/evaluation/estatistica.py)
 
 # langchain/langchain-core seguem instalados no venv (decisão desta sessão:
 # Etapa 2 usa os SDKs oficiais diretamente, sem LangChain — ver

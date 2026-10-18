@@ -1,0 +1,31 @@
+{
+  "arquivo": "data/evaluation/execucoes/hibrido/execucao_07.md",
+  "sha256": "50e3e25bb6f48447682df7391dbe25f61a4d9a257e947ef7f203a3f861947538",
+  "modelo_juiz": "command-a-03-2025",
+  "avaliacao": {
+    "clareza": {
+      "justificativa": "O manual utiliza linguagem simples e direta, com explicações claras sobre as funcionalidades e tarefas. As seções são bem definidas e os títulos ajudam a guiar o leitor.",
+      "nota": 5
+    },
+    "coerencia": {
+      "justificativa": "A organização do manual segue uma estrutura lógica, começando com uma visão geral, passando por funcionalidades específicas e terminando com tarefas operacionais e problemas conhecidos. Cada seção se encadeia de forma coerente.",
+      "nota": 5
+    },
+    "completude": {
+      "justificativa": "O manual cobre a maioria das funcionalidades e tarefas mencionadas nos artefatos de origem, incluindo cadastro, login, busca de restaurantes, montagem de pedidos, pagamentos e rastreamento. No entanto, faltam detalhes sobre algumas funcionalidades, como a avaliação do entregador e o gerenciamento de perfil do usuário.",
+      "nota": 4
+    },
+    "correcao": {
+      "justificativa": "O texto está bem escrito, com gramática e ortografia corretas. Não foram encontradas informações que pareçam erradas ou contraditórias em relação aos artefatos de origem.",
+      "nota": 5
+    },
+    "utilidade": {
+      "justificativa": "O manual fornece informações suficientes para que um usuário consiga utilizar o sistema, desde o cadastro até a finalização de um pedido. As explicações são claras e as seções sobre problemas conhecidos ajudam a antecipar possíveis dificuldades.",
+      "nota": 5
+    },
+    "afirmacoes_nao_sustentadas": [
+      "Permite que o usuário expresse sua experiência com o restaurante e o entregador após a conclusão do pedido, gerando dados de qualidade para a plataforma.",
+      "os usuários podem avaliar o entregador, atribuindo de 1 a 5 estrelas e adicionando um comentário opcional."
+    ]
+  }
+}

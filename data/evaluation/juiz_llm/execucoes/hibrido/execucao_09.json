@@ -1,0 +1,31 @@
+{
+  "arquivo": "data/evaluation/execucoes/hibrido/execucao_09.md",
+  "sha256": "0a6f99448bab5298684bc198c077970a437b0c2d144ec3fbe52bcc630c6da07a",
+  "modelo_juiz": "command-a-03-2025",
+  "avaliacao": {
+    "clareza": {
+      "justificativa": "O manual utiliza linguagem simples e direta, com explicações claras sobre as funcionalidades e problemas conhecidos. As seções são bem definidas e os títulos ajudam a guiar o leitor.",
+      "nota": 5
+    },
+    "coerencia": {
+      "justificativa": "A organização do manual segue uma estrutura lógica, começando com uma visão geral, passando por funcionalidades específicas e terminando com tarefas operacionais e problemas conhecidos. Cada seção se conecta de forma coerente à anterior.",
+      "nota": 5
+    },
+    "completude": {
+      "justificativa": "O manual cobre a maioria das funcionalidades e problemas listados nos artefatos de origem, mas não menciona algumas tarefas pendentes, como a implementação de skeleton loading (SCRUM-30) e a mensagem de erro sem conexão (SCRUM-31).",
+      "nota": 4
+    },
+    "correcao": {
+      "justificativa": "O texto está bem escrito, sem erros gramaticais ou ortográficos evidentes. As informações parecem estar corretas e alinhadas com os artefatos de origem.",
+      "nota": 5
+    },
+    "utilidade": {
+      "justificativa": "O manual fornece informações suficientes para que um usuário entenda como utilizar o sistema, incluindo funcionalidades, tarefas operacionais e problemas conhecidos. No entanto, a falta de detalhes sobre algumas tarefas pendentes pode limitar sua utilidade completa.",
+      "nota": 4
+    },
+    "afirmacoes_nao_sustentadas": [
+      "Atualmente, o usuário precisa digitar o endereço de entrega em cada novo pedido. A melhoria consiste em salvar automaticamente o último endereço utilizado e pré-preencher o campo no próximo checkout, com opção de alterar.",
+      "Quando o usuário abre o app sem conexão com a internet, é exibida uma mensagem técnica de timeout. A melhoria consiste em detectar a ausência de conexão imediatamente e exibir uma tela amigável com uma mensagem clara e um botão 'Tentar novamente'."
+    ]
+  }
+}

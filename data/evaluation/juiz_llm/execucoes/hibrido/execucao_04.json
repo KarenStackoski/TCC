@@ -1,0 +1,31 @@
+{
+  "arquivo": "data/evaluation/execucoes/hibrido/execucao_04.md",
+  "sha256": "b9fb6e61926cf1c71a542fcf3232eba14b02e500bcfca16617e9b738fb768527",
+  "modelo_juiz": "command-a-03-2025",
+  "avaliacao": {
+    "clareza": {
+      "justificativa": "O manual utiliza linguagem simples e direta, com frases curtas e objetivas. As seções estão bem definidas e os títulos ajudam a guiar o leitor. No entanto, em alguns pontos, como na descrição de funcionalidades, há repetição de informações que poderia ser evitada para maior clareza.",
+      "nota": 4
+    },
+    "coerencia": {
+      "justificativa": "O manual segue uma estrutura lógica, começando com uma visão geral, passando por funcionalidades e terminando com problemas conhecidos. A organização por épicos e histórias de usuário é coerente com os artefatos de origem. Porém, a seção de 'Tarefas Operacionais' parece deslocada, pois mistura melhorias pendentes com funcionalidades existentes.",
+      "nota": 4
+    },
+    "completude": {
+      "justificativa": "O manual cobre a maioria das funcionalidades listadas nos artefatos de origem, incluindo autenticação, catálogo, carrinho, pagamentos, rastreamento e avaliações. No entanto, faltam detalhes sobre algumas histórias de usuário, como a redefinição de senha (US-09) e o cancelamento de pedido (US-16), que não são mencionadas.",
+      "nota": 3
+    },
+    "correcao": {
+      "justificativa": "O texto está bem escrito, com gramática e ortografia corretas. Não foram encontrados erros significativos. As informações técnicas, como erros de API e problemas de integração, estão alinhadas com os artefatos de origem.",
+      "nota": 5
+    },
+    "utilidade": {
+      "justificativa": "O manual fornece informações suficientes para que um usuário entenda como utilizar o sistema, incluindo passos para login, pagamento, acompanhamento de pedidos e aplicação de cupons. No entanto, a falta de detalhes em algumas seções, como a redefinição de senha, pode deixar o usuário com dúvidas.",
+      "nota": 4
+    },
+    "afirmacoes_nao_sustentadas": [
+      "O usuário pode avaliar o entregador após a conclusão do pedido (EP-06 e US-15 não mencionam avaliação do entregador, apenas do restaurante).",
+      "O cancelamento de pedido é possível antes da confirmação pelo restaurante, com estorno automático (US-16 menciona estorno em até 5 dias úteis, não automático)."
+    ]
+  }
+}

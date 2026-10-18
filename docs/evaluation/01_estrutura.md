@@ -26,8 +26,13 @@ avaliação de geração de texto (Gatt e Krahmer, 2018; van der Lee et al., 202
 | Estrutura | seções, cabeçalhos, saltos de nível, listas | automática | `metricas_texto.py` |
 | Semelhança com o manual humano | BERTScore (P, R, F1) | automática | `bertscore.py` |
 | Reprodutibilidade | similaridade e estrutura entre execuções | automática | `variacao.py` |
-| Qualidade percebida | notas de 1 a 5 em 5 critérios, alfa de Krippendorff | avaliação humana cega | `avaliacao_humana.py` |
-| Qualidade (complemento) | as mesmas notas, dadas por uma LLM | LLM como juiz | `juiz_llm.py` |
+| Qualidade (aproximação) | notas de 1 a 5 em 5 critérios, em cada execução | LLM como juiz | `juiz_llm.py` |
+| Diferença entre métodos | Mann-Whitney U, A12 de Vargha-Delaney, ajuste de Holm | estatística | `estatistica.py` |
+
+**Escopo: só métricas técnicas.** O estudo não tem avaliação com usuários
+(nem avaliação humana cega por terceiros, nem teste de uso). A anotação de
+fidelidade (seção 4) é feita pela autora. O que isso deixa de fora está na
+seção 9.
 
 O manual humano (método 4) deve estar em `data/manuals_generated/manual/manual.md`
 (ou informe outro caminho com `--manual-humano`). Sem ele, os scripts
@@ -83,7 +88,9 @@ rodam para os outros três métodos, e o BERTScore não é calculado.
   de 60 s. Assim, a espera não entra no tempo medido. Fonte: Cohere,
   "Rate Limits".
 - **Método manual:** o tempo é cronometrado à mão e registrado em
-  `data/evaluation/tempo_manual.csv` (etapas: leitura, escrita, revisão).
+  `data/evaluation/tempo_manual.csv`: 21 min 51,56 s, cronometrado em
+  2026-10-18. Só o total foi medido; as etapas de leitura, escrita e
+  revisão não foram separadas.
   Não é diretamente comparável com o tempo de máquina, e isso deve ser
   dito no texto.
 - **Ressalva:** a indexação roda em toda execução do RAG (como na CLI da
@@ -172,73 +179,139 @@ rodam para os outros três métodos, e o BERTScore não é calculado.
 - O templating deve ter similaridade 1,0 e 1 texto distinto. Isso
   confirma a legenda da Figura 1 ("a mesma entrada gera sempre a mesma saída").
 
-## 7. Avaliação humana cega (`avaliacao_humana.py`)
-
-- **Critérios:** clareza, coerência, completude, correção e utilidade,
-  numa escala Likert de 1 a 5, com as definições em `CRITERIOS`. Eles se
-  baseiam nos critérios mais usados em avaliação humana de NLG (van der
-  Lee et al., "Human evaluation of automatically generated text: Current
-  trends and best practice guidelines", Computer Speech & Language, 2021)
-  e na finalidade de um manual de usuário (ISO/IEC/IEEE 26514).
-- **Cegamento:** os manuais viram `manual_A.md` a `manual_D.md`, em ordem
-  sorteada (semente registrada em `gabarito.json`). O rodapé de citações e
-  a linha "Documento gerado automaticamente — Etapa 1" saem.
-  - Limitação: a estrutura (as 4 seções fixas) e o estilo ainda podem
-    denunciar o método. Isso deve ser registrado no texto.
-- **Avaliadores:** pelo menos 2, avaliando de forma independente. Um
-  formulário por avaliador vai em `respostas/<nome>.csv`.
-- **Concordância:** alfa de Krippendorff no nível ordinal, adequado para
-  Likert, porque as notas têm ordem mas a distância entre elas não é
-  garantidamente igual. A unidade é o par (manual, critério), já que 4
-  manuais por critério seriam poucos para um alfa estável. Fontes:
-  Krippendorff, *Content Analysis: An Introduction to Its Methodology*, 2.
-  ed., Sage, 2004; pacote `krippendorff` (Castro).
-  - Interpretação usual (Krippendorff, 2004): α ≥ 0,800 é confiável;
-    0,667 ≤ α < 0,800 permite só conclusões provisórias.
-
-## 8. LLM como juiz (`juiz_llm.py`)
+## 7. LLM como juiz (`juiz_llm.py`)
 
 - **Método:** avaliação de resposta única de Zheng et al., "Judging
   LLM-as-a-Judge with MT-Bench and Chatbot Arena", NeurIPS 2023. Os
   critérios são dados explicitamente, e o juiz justifica antes de dar a
-  nota, como em Liu et al., "G-Eval", EMNLP 2023. Os critérios e as
-  definições são os mesmos da avaliação humana.
+  nota, como em Liu et al., "G-Eval", EMNLP 2023.
+- **Critérios:** clareza, coerência, completude, correção e utilidade,
+  numa escala de 1 a 5, com as definições em `CRITERIOS`. Eles se baseiam
+  nos critérios mais usados em avaliação humana de NLG (van der Lee et
+  al., "Human evaluation of automatically generated text: Current trends
+  and best practice guidelines", Computer Speech & Language, 2021) e na
+  finalidade de um manual de usuário (ISO/IEC/IEEE 26514).
 - **Configuração:** juiz `command-a-03-2025` com temperatura 0 e saída em
   JSON Schema (Cohere, "Structured Outputs"). O juiz recebe os 32
-  artefatos, para julgar a correção e listar afirmações sem apoio.
+  artefatos, para julgar a correção e listar afirmações sem apoio. O
+  manual vai anonimizado: o rodapé de citações e a linha "Documento gerado
+  automaticamente — Etapa 1" saem (`manuais.anonimizar`).
+- **Todas as execuções (`--execucoes`):** o juiz avalia cada manual salvo
+  pelo benchmark (10 por método automático) e o manual humano, e não só
+  um manual por método. RAG e híbrido mudam muito de uma execução para
+  outra (seção 6), então a nota de um manual só não representa o método.
+  O resultado é uma distribuição de notas por método, que entra nos
+  testes da seção 8. Cada avaliação fica em
+  `data/evaluation/juiz_llm/execucoes/<metodo>/execucao_NN.json`, com o
+  SHA-256 do arquivo julgado; o resumo fica em `resultado_execucoes.csv`.
+- **Ruído do juiz:** as 10 execuções do templating são o mesmo texto (seção
+  6). Se as notas delas variam, essa variação é do juiz, mesmo com
+  temperatura 0. Ela serve de linha de base: uma diferença entre métodos
+  menor que esse ruído não deve ser interpretada.
 - **Vieses, a registrar no TCC:**
   1. Autopreferência: o juiz é da mesma empresa do gerador (Command R) e
      pode favorecer os métodos 2 e 3. Fonte: Panickssery, Bowman e Feng,
      "LLM Evaluators Recognize and Favor Their Own Generations", NeurIPS 2024.
   2. Verbosidade: tendência a preferir textos mais longos (Zheng et al., 2023).
-- É um complemento. O resultado principal de qualidade é a avaliação humana.
+  3. Sem validação contra notas humanas: como o estudo não tem avaliação
+     com usuários, não se sabe quanto as notas do juiz concordam com as de
+     uma pessoa. Elas são uma aproximação da qualidade, não uma medida
+     dela. A medida principal de correção é a anotação de fidelidade
+     (seção 4).
 
-## 9. Como rodar (ordem sugerida)
+## 8. Comparação estatística entre os métodos (`estatistica.py`)
+
+- **Por quê:** RAG e híbrido são aleatórios (cada execução dá um texto
+  diferente). Comparar duas medianas não diz se a diferença é maior que a
+  variação natural entre execuções. Protocolo: Arcuri e Briand, "A
+  practical guide for using statistical tests to assess randomized
+  algorithms in software engineering", ICSE 2011, que recomendam um teste
+  não paramétrico e um tamanho de efeito sobre várias execuções.
+- **Dados:** os valores de cada execução. Do benchmark: tempo total, tokens
+  (entrada + saída), palavras, Flesch, cobertura explícita e texto
+  citado. Do juiz com `--execucoes`: as 5 notas e o número de afirmações
+  não sustentadas.
+- **Teste:** U de Mann-Whitney bilateral, para cada par de métodos. Não
+  supõe distribuição normal (o tempo, por exemplo, tem cauda longa por
+  causa da rede). Fontes: Mann e Whitney, "On a Test of Whether One of Two
+  Random Variables is Stochastically Larger than the Other", The Annals of
+  Mathematical Statistics, 1947; implementação `scipy.stats.mannwhitneyu`
+  (Virtanen et al., "SciPy 1.0", Nature Methods, 2020). Quando os dois
+  grupos têm todos os valores iguais (ex.: nota 5 em todas as execuções),
+  não há diferença a testar, e p = 1.
+- **Tamanho do efeito:** A12 de Vargha e Delaney, a probabilidade de uma
+  execução do método A ter valor maior que uma do método B (empate conta
+  meio; 0,5 = sem diferença). Faixas: |A12 − 0,5| < 0,06 desprezível;
+  < 0,14 pequeno; < 0,21 médio; acima disso, grande. Fonte: Vargha e
+  Delaney, "A Critique and Improvement of the CL Common Language Effect
+  Size Statistics of McGraw and Wong", Journal of Educational and
+  Behavioral Statistics, 2000. Com n = 10, o p diz se a diferença existe;
+  o A12 diz se ela importa.
+- **Comparações múltiplas:** cada métrica tem 3 comparações (templating ×
+  RAG, templating × híbrido, RAG × híbrido). O p é ajustado pelo método de
+  Holm dentro de cada métrica, com α = 0,05. Fonte: Holm, "A Simple
+  Sequentially Rejective Multiple Test Procedure", Scandinavian Journal of
+  Statistics, 1979.
+- **Manual humano:** é uma execução só, então fica de fora dos testes. Os
+  valores dele são descritos ao lado dos outros, sem teste.
+- **Ressalva:** as comparações com o templating, nas métricas do texto,
+  são triviais. O templating tem variância zero, então qualquer variação
+  do outro método já o separa. O que importa nesses casos é o A12 e o
+  sentido da diferença.
+- Resultado em `data/evaluation/estatistica.csv` e na seção "Comparação
+  estatística entre os métodos" de `resultados.md`.
+
+## 9. Ameaças à validade (escopo sem usuários)
+
+O estudo usa só métricas técnicas. Isso deve aparecer no texto do TCC,
+seguindo a classificação de Wohlin et al., *Experimentation in Software
+Engineering*, Springer, 2012 (validade de construto, interna, externa e
+de conclusão):
+
+- **Construto:** nenhuma métrica mede diretamente se um usuário consegue
+  usar o sistema com o manual. Flesch, estrutura e cobertura são
+  aproximações. A utilidade do juiz é a opinião de uma LLM, e essa
+  opinião não foi validada contra a de pessoas. O BERTScore mede
+  semelhança com o manual da autora, não qualidade.
+- **Interna:** a fidelidade e o manual humano são feitos pela mesma
+  pessoa (a autora), sem segundo anotador. O juiz pode favorecer os textos
+  da Cohere (seção 7).
+- **Externa:** há um único projeto de entrada (os 32 artefatos de
+  `data/raw/data.json`) e um único provedor de LLM. Os resultados não se
+  generalizam para outros projetos ou modelos sem nova medição.
+- **Conclusão:** n = 10 execuções por método, e a anotação de fidelidade é
+  sobre 1 manual por método.
+- **Trabalho futuro:** avaliação com usuários (avaliação humana cega com
+  concordância entre avaliadores, ou teste de uso com tarefas), seguindo
+  van der Lee et al. (2021).
+
+## 10. Como rodar (ordem sugerida)
 
 ```
 # 1. Tempo e tokens (cria também as execuções usadas na variação)
 python -m src.evaluation.benchmark --repeticoes 10   # já rodado em 2026-09-27
 
 # 2. Registrar à mão o tempo do método manual
-#    data/evaluation/tempo_manual.csv  (etapa,minutos)
+#    data/evaluation/tempo_manual.csv  (etapa,minutos,cronometro) — já preenchido
 
 # 3. Fidelidade: gera as planilhas; anotar; depois analisar
 python -m src.evaluation.fidelidade preparar
 python -m src.evaluation.fidelidade analisar
 
-# 4. Avaliação humana: gera o pacote cego; avaliadores preenchem; analisar
-python -m src.evaluation.avaliacao_humana preparar --semente 2026
-python -m src.evaluation.avaliacao_humana analisar
+# 4. LLM como juiz
+python -m src.evaluation.juiz_llm               # 1 manual por método (4 chamadas)
+python -m src.evaluation.juiz_llm --execucoes   # cada execução (31 chamadas)
 
-# 5. LLM como juiz (4 chamadas à API)
-python -m src.evaluation.juiz_llm
-
-# 6. Relatório consolidado (métricas automáticas + tudo que já existir)
+# 5. Relatório consolidado (métricas automáticas, testes estatísticos e
+#    tudo que já existir)
 python -m src.evaluation.relatorio
 ```
 
 Consumo do plano Trial da Cohere com 10 repetições: RAG = 3 chamadas por
 execução (2 de embed, 1 de chat); híbrido = 4 chamadas de chat por execução;
-juiz = 1 chamada por manual. Total: cerca de 75 chamadas, bem abaixo do
-limite de 1.000 por mês. Uma chave Trial nunca gera cobrança: se o limite
-acabar, a API só passa a recusar as chamadas (Cohere, "Rate Limits").
+juiz = 1 chamada por manual (4 no modo simples, 31 com `--execucoes`).
+Total: cerca de 105 chamadas, bem abaixo do limite de 1.000 por mês. O
+`--execucoes` não refaz uma avaliação já salva do mesmo arquivo; quando o
+manual humano entrar, só ele é avaliado. Uma chave Trial nunca gera
+cobrança: se o limite acabar, a API só passa a recusar as chamadas
+(Cohere, "Rate Limits").

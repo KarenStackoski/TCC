@@ -1,0 +1,36 @@
+{
+  "arquivo": "data/evaluation/execucoes/rag/execucao_06.md",
+  "sha256": "d390e38ddc25782cdd30d1195a88ca51a3243430bd89512e04d38604381a7268",
+  "modelo_juiz": "command-a-03-2025",
+  "avaliacao": {
+    "clareza": {
+      "justificativa": "O manual utiliza linguagem simples e direta, com frases curtas e objetivas, facilitando a compreensão do usuário. No entanto, alguns termos técnicos, como 'tokenização' e 'WebSocket', poderiam ser explicados para maior clareza.",
+      "nota": 4
+    },
+    "coerencia": {
+      "justificativa": "O manual está organizado de forma lógica, seguindo a estrutura das funcionalidades do aplicativo. Cada seção flui naturalmente para a próxima, mas a seção 'Bugs e Melhorias' poderia estar mais integrada ao contexto de cada funcionalidade, em vez de agrupada no final.",
+      "nota": 4
+    },
+    "completude": {
+      "justificativa": "O manual cobre as principais funcionalidades do aplicativo, mas falta detalhar alguns aspectos importantes, como o processo de cadastro, login com Google, redefinição de senha, e o funcionamento do rastreamento de entrega em tempo real. Além disso, não menciona funcionalidades como filtro por categoria, busca de restaurantes, aplicação de cupons, e cancelamento de pedidos.",
+      "nota": 3
+    },
+    "correcao": {
+      "justificativa": "O texto está bem escrito, com gramática e ortografia corretas. No entanto, há afirmações que não são sustentadas pelos artefatos de origem, como a implementação do modo escuro e a correção de bugs, que ainda estão em desenvolvimento.",
+      "nota": 4
+    },
+    "utilidade": {
+      "justificativa": "O manual fornece informações úteis para o usuário, mas a falta de detalhes em algumas funcionalidades e a inclusão de informações sobre bugs e melhorias que ainda não foram implementadas podem causar confusão. Além disso, a ausência de instruções passo a passo para tarefas críticas reduz sua utilidade prática.",
+      "nota": 3
+    },
+    "afirmacoes_nao_sustentadas": [
+      "O aplicativo atualmente só suporta tema claro, mas em breve será implementado suporte ao modo escuro, seguindo as diretrizes de design do sistema operacional (Android e iOS).",
+      "Este problema está sendo tratado e em breve será corrigido.",
+      "Este bug está sendo reproduzido e uma solução está sendo desenvolvida.",
+      "Este problema está sendo tratado e uma correção será implementada em breve.",
+      "Em breve, será implementada uma tela amigável com uma mensagem clara e um botão 'Tentar novamente', sem aguardar o timeout da requisição.",
+      "Este problema está sendo tratado e uma solução está sendo desenvolvida.",
+      "Este problema está sendo reproduzido e uma solução está sendo implementada."
+    ]
+  }
+}

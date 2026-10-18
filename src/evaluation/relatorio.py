@@ -5,8 +5,9 @@ explícita, taxa de texto citado, BERTScore) e a variação entre execuções, e
 acrescenta os resultados que dependem de etapas separadas, quando já
 existem: tempos (benchmark.py), tempo do método manual
 (data/evaluation/tempo_manual.csv, preenchido à mão), fidelidade
-(fidelidade.py), avaliação humana (avaliacao_humana.py) e juiz LLM
-(juiz_llm.py). Ver docs/evaluation/01_estrutura.md.
+(fidelidade.py) e juiz LLM (juiz_llm.py). Por fim, compara os métodos
+estatisticamente sobre os valores de cada execução (estatistica.py).
+Ver docs/evaluation/01_estrutura.md.
 
 Uso:
     python -m src.evaluation.relatorio
@@ -19,11 +20,14 @@ import argparse
 import csv
 import hashlib
 import json
+import statistics
 from datetime import datetime
 from pathlib import Path
 
 from src.evaluation import metricas_texto as mt
-from src.evaluation.avaliacao_humana import MANUAIS_PADRAO
+from src.evaluation.estatistica import comparar_metricas
+from src.evaluation.juiz_llm import CRITERIOS
+from src.evaluation.manuais import MANUAIS_PADRAO
 from src.evaluation.variacao import variacao_do_diretorio
 from src.jira.extractor import parse_issues
 
@@ -112,6 +116,46 @@ def variacoes(execucoes_dir: Path) -> list[dict]:
     return linhas
 
 
+METRICAS_POR_EXECUCAO = [
+    "tempo_total_s",
+    "tokens_total",
+    "palavras",
+    "flesch_pt",
+    "cobertura_explicita_%",
+    "texto_citado_%",
+]
+NOTAS_JUIZ = [*CRITERIOS, "afirmacoes_nao_sustentadas"]
+
+
+def resumo_juiz(linhas: list[dict]) -> list[dict]:
+    """Por método: mediana (mín–máx) de cada nota do juiz nas execuções."""
+    resumo = []
+    for metodo in dict.fromkeys(linha["metodo"] for linha in linhas):
+        do_metodo = [linha for linha in linhas if linha["metodo"] == metodo]
+        item = {"metodo": metodo, "execucoes": len(do_metodo)}
+        for nota in NOTAS_JUIZ:
+            valores = [float(linha[nota]) for linha in do_metodo]
+            item[nota] = f"{statistics.median(valores):g} ({min(valores):g}–{max(valores):g})"
+        resumo.append(item)
+    return resumo
+
+
+def dados_por_execucao(individuais: list[dict], juiz: list[dict]) -> list[dict]:
+    """Junta, por (método, execução), as métricas do benchmark e as notas do
+    juiz. O manual humano só tem nota do juiz (não passa pelo benchmark)."""
+    por_chave: dict[tuple[str, int], dict] = {}
+    for linha in individuais:
+        por_chave[(linha["metodo"], int(linha["execucao"]))] = {
+            "metodo": linha["metodo"],
+            **{m: linha[m] for m in METRICAS_POR_EXECUCAO if m != "tokens_total"},
+            "tokens_total": int(linha["tokens_entrada"]) + int(linha["tokens_saida"]),
+        }
+    for linha in juiz:
+        chave = (linha["metodo"], int(linha["execucao"]))
+        por_chave.setdefault(chave, {"metodo": linha["metodo"]}).update({n: linha[n] for n in NOTAS_JUIZ})
+    return list(por_chave.values())
+
+
 def _ler_csv(caminho: Path) -> list[dict]:
     if not caminho.exists():
         return []
@@ -159,11 +203,14 @@ def main() -> None:
     _escrever_csv(AVALIACAO_DIR / "metricas_automaticas.csv", automaticas)
     _escrever_csv(AVALIACAO_DIR / "variacao.csv", var)
 
-    concordancia_path = AVALIACAO_DIR / "avaliacao_humana" / "concordancia.json"
-    concordancia = json.loads(concordancia_path.read_text(encoding="utf-8")) if concordancia_path.exists() else None
-
     individuais = execucoes_individuais(_ler_csv(AVALIACAO_DIR / "tempos.csv"), artefatos)
     _escrever_csv(AVALIACAO_DIR / "execucoes_individuais.csv", individuais)
+
+    juiz_execucoes = _ler_csv(AVALIACAO_DIR / "juiz_llm" / "resultado_execucoes.csv")
+    comparacoes = comparar_metricas(
+        dados_por_execucao(individuais, juiz_execucoes), METRICAS_POR_EXECUCAO + NOTAS_JUIZ
+    )
+    _escrever_csv(AVALIACAO_DIR / "estatistica.csv", comparacoes)
 
     agora = datetime.now().astimezone().isoformat(timespec="seconds")
     md = [
@@ -172,7 +219,7 @@ def main() -> None:
         f"Gerado por `python -m src.evaluation.relatorio` em {agora}.",
         "Métodos e fontes de cada métrica: `docs/evaluation/01_estrutura.md`.",
         "",
-        "Manuais avaliados nas seções de métricas automáticas, fidelidade, avaliação humana e juiz:",
+        "Manuais avaliados nas seções de métricas automáticas, fidelidade e juiz (1 manual por método):",
         *[f"- {m}: `{p}`" + ("" if Path(p).exists() else " (ainda não existe)") for m, p in manuais.items()],
         "",
     ]
@@ -204,10 +251,20 @@ def main() -> None:
     )
     md += _tabela_md("Variação entre execuções", var)
     md += _tabela_md("Fidelidade e cobertura de conteúdo (anotação)", _ler_csv(AVALIACAO_DIR / "fidelidade" / "resultado.csv"))
-    md += _tabela_md("Avaliação humana (1 a 5)", _ler_csv(AVALIACAO_DIR / "avaliacao_humana" / "resultado.csv"))
-    if concordancia:
-        md += [f"Concordância: {concordancia}", ""]
     md += _tabela_md("LLM como juiz (1 a 5)", _ler_csv(AVALIACAO_DIR / "juiz_llm" / "resultado.csv"))
+    md += _tabela_md(
+        "LLM como juiz sobre todas as execuções (1 a 5)",
+        resumo_juiz(juiz_execucoes),
+        "Mediana (mínimo–máximo) das notas dadas a cada manual salvo pelo benchmark. "
+        "As execuções do templating são idênticas: a faixa delas é o ruído do próprio juiz.",
+    )
+    md += _tabela_md(
+        "Comparação estatística entre os métodos",
+        comparacoes,
+        "U de Mann-Whitney bilateral sobre os valores de cada execução; p ajustado por Holm "
+        "dentro de cada métrica; A12 = P(execução de A > execução de B). O manual humano "
+        "(1 execução) fica de fora.",
+    )
 
     (AVALIACAO_DIR / "resultados.md").write_text("\n".join(md), encoding="utf-8")
     print(f"Relatório em {AVALIACAO_DIR / 'resultados.md'}")

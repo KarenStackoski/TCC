@@ -1,0 +1,32 @@
+{
+  "arquivo": "data/evaluation/execucoes/hibrido/execucao_05.md",
+  "sha256": "744e957c21bfdfa5437a41f599e84adbe339ef45d6cb04034e0a9c70ab04107d",
+  "modelo_juiz": "command-a-03-2025",
+  "avaliacao": {
+    "clareza": {
+      "justificativa": "O manual utiliza linguagem simples e direta, com explicações claras para cada funcionalidade e problema conhecido. As seções estão bem definidas e os títulos ajudam a guiar o leitor.",
+      "nota": 5
+    },
+    "coerencia": {
+      "justificativa": "A organização do manual segue uma estrutura lógica, começando com uma visão geral, passando por funcionalidades, tarefas operacionais e problemas conhecidos. Cada seção está bem conectada e não há saltos abruptos de assunto.",
+      "nota": 5
+    },
+    "completude": {
+      "justificativa": "O manual cobre a maioria das funcionalidades e problemas listados nos artefatos de origem, mas falta detalhar alguns aspectos como os critérios de aceitação específicos para certas funcionalidades (ex: tempo de expiração do link de redefinição de senha).",
+      "nota": 4
+    },
+    "correcao": {
+      "justificativa": "O texto está bem escrito, sem erros gramaticais ou ortográficos evidentes. As informações apresentadas estão alinhadas com os artefatos de origem, sem contradições.",
+      "nota": 5
+    },
+    "utilidade": {
+      "justificativa": "O manual fornece informações suficientes para que um usuário consiga utilizar o sistema, incluindo passos para realizar tarefas e explicações sobre problemas conhecidos. No entanto, alguns detalhes importantes (como critérios de aceitação) poderiam ser incluídos para maior utilidade.",
+      "nota": 4
+    },
+    "afirmacoes_nao_sustentadas": [
+      "A avaliação do restaurante permite que o usuário avalie também o entregador (não mencionado nos artefatos)",
+      "O manual menciona que o filtro de categoria 'não é resetado ao voltar para a tela inicial', mas os artefatos descrevem que o filtro persiste visualmente, mas a lista não é filtrada (inconsistência, não falta de reset)",
+      "O manual afirma que o valor do frete é somado em dobro no resumo do pedido, mas os artefatos especificam que o problema é apenas na exibição, não no cálculo (contradição parcial)"
+    ]
+  }
+}

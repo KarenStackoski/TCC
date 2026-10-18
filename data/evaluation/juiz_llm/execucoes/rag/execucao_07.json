@@ -1,0 +1,31 @@
+{
+  "arquivo": "data/evaluation/execucoes/rag/execucao_07.md",
+  "sha256": "eb4887a36b552d373e7bc7c25713e2d832028b67c47f38d6cfbc0f654f988ebb",
+  "modelo_juiz": "command-a-03-2025",
+  "avaliacao": {
+    "clareza": {
+      "justificativa": "O manual usa linguagem simples e direta, mas em alguns pontos falta especificidade, como na descrição de funcionalidades que não detalha passos ou critérios de uso.",
+      "nota": 3
+    },
+    "coerencia": {
+      "justificativa": "A organização segue uma estrutura lógica por módulos (autenticação, catálogo, etc.), mas a seção 'Bugs e Melhorias' mistura problemas e funcionalidades, quebrando a coerência.",
+      "nota": 3
+    },
+    "completude": {
+      "justificativa": "Faltam detalhes operacionais críticos, como passos para realizar ações (ex: como aplicar cupom) e critérios de aceitação das histórias de usuário. Também não cobre todas as funcionalidades listadas nos artefatos (ex: cancelamento de pedido).",
+      "nota": 2
+    },
+    "correcao": {
+      "justificativa": "O texto está gramaticalmente correto e sem erros ortográficos. As informações técnicas sobre bugs estão alinhadas com os artefatos de origem.",
+      "nota": 5
+    },
+    "utilidade": {
+      "justificativa": "Embora cubra áreas importantes, a falta de instruções passo a passo e detalhes operacionais limita a capacidade do usuário de realizar tarefas com base apenas no manual.",
+      "nota": 2
+    },
+    "afirmacoes_nao_sustentadas": [
+      "O usuário pode expressar sua experiência com o restaurante e o entregador após a conclusão do pedido, gerando dados de qualidade para a plataforma.",
+      "O app monitora o pagamento em tempo real e, ao detectar a confirmação, avança automaticamente para a próxima tela sem necessidade de ação do usuário."
+    ]
+  }
+}

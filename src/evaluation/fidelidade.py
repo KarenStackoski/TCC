@@ -36,7 +36,7 @@ import json
 import re
 from pathlib import Path
 
-from src.evaluation.avaliacao_humana import MANUAIS_PADRAO
+from src.evaluation.manuais import MANUAIS_PADRAO
 from src.evaluation.metricas_texto import dividir_frases, limpar_markdown
 from src.jira.extractor import parse_issues
 

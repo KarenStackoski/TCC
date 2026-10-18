@@ -336,3 +336,47 @@ registrada para a Etapa 2. Detalhamento completo em
 - Consumo: cerca de 90 chamadas à Cohere no total da sessão (limite Trial:
   1.000/mês).
 - Relatório consolidado: `data/evaluation/resultados.md`.
+
+## Sessão 5 — 2026-10-18 — Avaliação só com métricas técnicas
+
+### Decisão
+
+- A pesquisa com usuários saiu do estudo. Não há mais avaliação humana cega
+  por terceiros nem teste de uso. O manual humano (método 4) continua.
+
+### O que foi feito
+
+- `avaliacao_humana.py` removido (e os testes dele). `MANUAIS_PADRAO` e
+  `anonimizar` foram para `src/evaluation/manuais.py`; `CRITERIOS` e
+  `ESCALA` foram para `juiz_llm.py`. A dependência `krippendorff` saiu do
+  `requirements.txt`.
+- `juiz_llm.py --execucoes`: o juiz avalia cada manual salvo pelo benchmark
+  (10 por método) e o manual humano. Cada avaliação é salva com o SHA-256
+  do arquivo julgado e não é refeita se o arquivo não mudou. As 10
+  execuções do templating são idênticas, então a variação das notas delas
+  mede o ruído do juiz.
+- `estatistica.py` (novo): Mann-Whitney U bilateral entre cada par de
+  métodos, tamanho de efeito A12 de Vargha-Delaney e ajuste de Holm por
+  métrica (Arcuri e Briand, ICSE 2011). Usa `scipy` (nova dependência).
+- `relatorio.py`: tirou a seção da avaliação humana; acrescentou o juiz
+  sobre todas as execuções e a comparação estatística
+  (`data/evaluation/estatistica.csv`).
+- `docs/evaluation/01_estrutura.md`: escopo sem usuários, seção 7 (juiz)
+  revisada, seção 8 (estatística) e seção 9 (ameaças à validade) novas.
+
+### Pendências
+
+- ~~Terminar o manual humano.~~ Feito em 2026-10-18: 978 palavras de
+  prosa, 21 min 51,56 s cronometrados (só o total, sem separar leitura,
+  escrita e revisão; em `data/evaluation/tempo_manual.csv`). Juiz e
+  BERTScore recalculados com a versão final.
+- Uma das 3 "afirmações não sustentadas" que o juiz apontou no manual
+  humano se contradiz ("10 minutos, mas os artefatos especificam 10
+  minutos"). É um falso positivo do juiz, um bom exemplo para a seção de
+  ameaças à validade. A contagem do juiz não substitui a anotação de
+  fidelidade.
+- Anotar as planilhas de fidelidade. Sem avaliação com usuários, ela é a
+  principal medida de correção.
+- Conferir nas fontes originais as referências novas (Arcuri e Briand,
+  2011; Mann e Whitney, 1947; Vargha e Delaney, 2000; Holm, 1979; Virtanen
+  et al., 2020; Wohlin et al., 2012).
