@@ -401,3 +401,33 @@ registrada para a Etapa 2. Detalhamento completo em
   `concordancia` (concordância simples e kappa de Cohen entre as rodadas,
   faixas de Landis e Koch). Procedimento na seção 8 do guia. O relatório
   ganha uma seção quando `reanotacao/concordancia.csv` existir.
+
+## Sessão 6 — 2026-10-19 — Fidelidade anotada e referências conferidas
+
+### O que foi feito
+
+- **1ª rodada da fidelidade feita pelo Claude** (Opus 5.5), a pedido da
+  autora, com o guia e as regras de decisão sugeridas nele: 296 frases
+  nas 4 planilhas. Só uma frase fora de `S`: manual humano, id 18 (`P`,
+  extrínseca, "autenticar novamente com a mesma conta"). Templating, RAG
+  e híbrido: 100% sustentadas; manual humano: 98,1%. Cobertura de
+  conteúdo: templating e híbrido 100%, manual 50%, RAG 46,9%.
+- O desenho da concordância mudou de intra-anotador para **entre
+  anotadores** (Claude × autora). Guia (seções 7 e 8) e
+  `01_estrutura.md` (seções 1, 4, 9 e 10) atualizados.
+- Amostra de reanotação sorteada (semente 2026): 61 frases em
+  `data/evaluation/fidelidade/reanotacao/`. O intervalo de 7 dias não se
+  aplica (a autora não fez a 1ª rodada).
+- Referências da Etapa 4 conferidas nas fontes (seção 11 de
+  `01_estrutura.md`). Martins et al. (1996) conferido no PDF da USP: a
+  constante 248,835 = 206,835 + 42 e as faixas batem com o código.
+
+### Pendências
+
+- **Autora:** reanotar as 61 frases de `fidelidade/reanotacao/` sem abrir
+  as planilhas da 1ª rodada; depois `python -m src.evaluation.reanotacao
+  concordancia` e `python -m src.evaluation.relatorio`.
+- Revisar a 1ª rodada (depois da reanotação), em especial as decisões
+  "contradito por BUG-0X" e os rótulos `-` de "Passo a passo:".
+- Conferir no artigo de Vargha e Delaney (2000) os limiares do A12 e, na
+  ACM, o número de artigo de Ji et al. (2023).

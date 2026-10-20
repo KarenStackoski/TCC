@@ -1,0 +1,7 @@
+﻿id,secao,frase,rotulo,artefatos,fonte_declarada,observacao
+7,Catálogo de Restaurantes,"As informações sobre tempo de entrega, taxa de frete e avaliações estão disponíveis para ajudar o usuário a encontrar o que deseja pedir.",,,"SCRUM-2, SCRUM-6",
+19,Visualização do Cardápio,"O cardápio é organizado por seções (Entradas, Pratos Principais, Bebidas, Sobremesas), com nome, foto, descrição curta e preço de cada item.",,,SCRUM-12,
+27,Modo Escuro,"O app atualmente só suporta tema claro, mas está prevista a implementação de suporte a modo escuro, seguindo as diretrizes de design do sistema operacional (Android e iOS).",,,SCRUM-33,
+32,Bugs e Melhorias,"App trava ao adicionar item sem foto ao carrinho: Ao tentar adicionar um item sem imagem cadastrada, o aplicativo para de responder e exibe uma tela branca.",,,SCRUM-22,
+39,Bugs e Melhorias,O usuário precisa fechar e reabrir a tela para ver a posição atualizada.,,,SCRUM-28,
+41,Bugs e Melhorias,Este atraso impacta a percepção de tempo real do acompanhamento.,,,SCRUM-26,

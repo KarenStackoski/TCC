@@ -1,0 +1,107 @@
+% =====================================================================
+% Relação entre os trabalhos correlatos e este trabalho
+% Para o fim do capítulo de trabalhos correlatos.
+% Pacotes: tabularx, booktabs (\usepackage{tabularx,booktabs}).
+% Dados de cada trabalho conferidos nas fontes em 2026-10-19
+% (ver docs/tcc/correlatos_notas.md).
+% =====================================================================
+
+\section{Comparação entre os trabalhos correlatos}
+
+O Quadro~\ref{qua:correlatos} resume os trabalhos discutidos neste capítulo
+segundo cinco aspectos: a fonte de informação utilizada, o tipo de texto
+produzido e o seu público, as técnicas empregadas, a forma de avaliação e
+o ponto que permanece em aberto em relação à proposta deste trabalho.
+
+\begin{quadro}[htb]
+\caption{Comparação entre os trabalhos correlatos e este trabalho}
+\label{qua:correlatos}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.2cm}
+  >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X
+  >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Trabalho} & \textbf{Fonte e saída} & \textbf{Técnicas} &
+\textbf{Avaliação} & \textbf{O que fica em aberto} \\
+\midrule
+\citeonline{yang2025} (DocAgent) &
+Código-fonte Python; documentação de funções, métodos e classes, voltada a desenvolvedores &
+Sistema multiagente (\textit{Reader}, \textit{Searcher}, \textit{Writer}, \textit{Verifier} e \textit{Orchestrator}) com processamento topológico do código &
+Completude, utilidade (LLM como juiz) e veracidade, em 366 componentes de 9 repositórios; sem avaliação humana &
+Documentação técnica de código; não trata de manuais para o usuário final \\
+\midrule
+\citeonline{jakupov2026} (DocAider) &
+Repositórios GitHub; documentação em Markdown do código, atualizada a cada \textit{pull request} &
+Múltiplos agentes com GPT-4, acionados por GitHub Actions &
+Relato de projeto, sem métricas publicadas na fonte consultada &
+Manutenção de documentação técnica; o público continua sendo o desenvolvedor \\
+\midrule
+\citeonline{medeiros2024} &
+Manual automotivo (Volkswagen Taos 2023) já existente; respostas a perguntas do usuário &
+RAG com GPT-4 Turbo, LangChain e banco vetorial Milvus; entrada por texto, áudio e imagem &
+Estudo de caso com 2 perguntas; ROUGE-L, METEOR, BERTScore e tempo de resposta &
+Consulta um manual pronto; não gera o manual nem parte de artefatos de desenvolvimento \\
+\midrule
+\citeonline{perkusich2026} &
+Questionário com 70 profissionais brasileiros &
+Uso de LLMs na gestão do Scrum &
+Pesquisa de opinião: 78\% relatam ganho de produtividade; 81\%, saídas ``quase corretas''; 59\%, alucinações &
+Mostra o risco de erro das LLMs, mas não mede a fidelidade de um texto gerado \\
+\midrule
+\citeonline{gurgul2026} &
+Revisão da literatura e questionário com 65 desenvolvedores &
+IA generativa no ciclo de vida do software &
+Mais de 70\% relatam que a IA ao menos reduziu à metade o tempo de tarefas repetitivas e de documentação &
+Percepção de tempo, sem comparação controlada entre métodos de geração \\
+\midrule
+\textbf{Este trabalho} &
+32 artefatos do Jira (épicos, histórias, \textit{bugs} e melhorias); manual do usuário final &
+Redação manual, \textit{templating} (Jinja2), RAG (Cohere Embed e Command~R, Chroma) e híbrido (\textit{template} + LLM) &
+Tempo e \textit{tokens} em 10 execuções, fidelidade frase a frase, cobertura, legibilidade (Flesch), BERTScore, variação, LLM como juiz e testes estatísticos &
+--- \\
+\bottomrule
+\end{tabularx}
+\legend{Fonte: elaborado pela autora.}
+\end{quadro}
+
+Os trabalhos analisados mostram que a aplicação de LLMs à documentação de
+software já apresenta resultados expressivos, mas concentrada na
+documentação técnica. O DocAgent \cite{yang2025} gera a documentação de
+funções, métodos e classes a partir do código-fonte e alcança 95,74\% de
+veracidade na melhor configuração, enquanto o DocAider \cite{jakupov2026}
+automatiza a atualização da documentação de repositórios a cada
+\textit{pull request}. Em ambos, a entrada é o código e o leitor é o
+desenvolvedor. Nenhum deles produz instruções para quem usa o sistema sem
+conhecimento técnico, que é o público do manual de usuário tratado neste
+trabalho.
+
+\citeonline{medeiros2024} aproximam-se desse público ao aplicar RAG a
+manuais automotivos, mas o problema que resolvem é outro: o manual já
+existe, e a LLM ajuda o usuário a encontrar a informação nele. Neste
+trabalho, o manual ainda não existe. A base de conhecimento do RAG é
+formada pelos artefatos de desenvolvimento registrados na plataforma de
+DevOps \cite{Montgomery2024_DevOps}, e o resultado esperado é o próprio
+manual. Além disso, o estudo de caso de \citeonline{medeiros2024} avalia
+duas perguntas por métricas de sobreposição com respostas de referência,
+sem verificar frase a frase se o texto gerado é sustentado pela fonte.
+
+As pesquisas de \citeonline{perkusich2026} e \citeonline{gurgul2026}
+completam o quadro pelo lado da prática. A segunda indica ganho de tempo
+percebido em tarefas de documentação, e a primeira registra que saídas
+``quase corretas'' e alucinações estão entre as principais barreiras à
+adoção de LLMs. Ambas, porém, baseiam-se na opinião de profissionais. Não
+comparam, sob as mesmas condições, quanto tempo cada método leva nem
+quanto do texto gerado é de fato sustentado pelas fontes.
+
+Este trabalho se posiciona nessas lacunas de três formas. Primeiro, muda a
+fonte e o público: parte de artefatos de gestão ágil (épicos, histórias de
+usuário, \textit{bugs} e melhorias) para produzir documentação destinada
+ao usuário final. Segundo, em vez de propor uma única ferramenta, compara
+quatro métodos sobre a mesma entrada: a redação manual, o
+\textit{templating}, o RAG e a combinação de \textit{template} com LLM.
+Isso permite separar o que cada técnica contribui para a estrutura e para
+o texto. Terceiro, mede de forma direta os dois riscos apontados pela
+literatura: o custo de tempo, em execuções repetidas e com teste
+estatístico, e a fidelidade, pela anotação de cada frase dos manuais
+quanto ao apoio nos artefatos de origem, com a distinção entre erros
+intrínsecos e extrínsecos de \citeonline{Maynez2020}.

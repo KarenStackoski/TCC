@@ -139,19 +139,37 @@ Para `N` e `P`, escreva em `observacao` o tipo do erro:
 4. Ao terminar, rode `python -m src.evaluation.fidelidade analisar` e
    depois `python -m src.evaluation.relatorio`.
 
-## 7. Limitações a declarar no TCC
+## 7. Quem anotou e limitações a declarar no TCC
 
-- **Uma anotadora só, que também é a autora do manual humano e do estudo.**
-  Ela sabe qual método gerou cada texto, então a anotação não é cega. A
-  consistência é medida pela concordância intra-anotador (seção 8).
+**Primeira rodada (2026-10-19):** feita pelo Claude (modelo Opus 5.5,
+`claude-opus-5-5`), a pedido da autora, com este guia. Decisões adotadas:
+as regras sugeridas nas regras 1 e 2 da seção 4. Resultado: só uma frase
+fora de `S` (manual humano, id 18: `P`, extrínseca, "dúvida"). Além do
+pré-preenchido, ficaram com `-` os rótulos do template ("Passo a passo:"),
+o cabeçalho da tabela de bugs do templating e "Particularidades:" do
+manual humano. As frases que descrevem um comportamento quebrado por um
+bug levam a observação "contradito por BUG-0X" (regra 3).
+
+- **A primeira rodada é de uma LLM.** Ela pode ser leniente com textos
+  gerados por outra LLM. A amostra reanotada pela autora (seção 8) mede
+  isso.
+- **A autora também escreveu o manual humano e o estudo.** Ela sabe qual
+  método gerou cada texto, então a reanotação não é cega quanto ao método.
 - A pista `fonte_declarada` pode ancorar a anotação (seção 5).
 - A anotação cobre 1 manual por método, e não as 10 execuções.
 
-## 8. Reanotação (concordância intra-anotador)
+## 8. Reanotação (concordância entre anotadores)
 
-Sem uma segunda pessoa, a consistência da anotação é medida comparando
-você com você mesma: uma amostra das frases é anotada de novo depois de
-um intervalo, sem olhar a primeira rodada.
+A primeira rodada foi feita pelo Claude (seção 7). A autora anota de novo
+uma amostra das frases, sem olhar a primeira rodada, e as duas são
+comparadas. Como a autora não fez a primeira rodada, não há memória dela
+a esquecer: **o intervalo de 7 dias do passo 3 não se aplica**, e a data
+`reanotar_a_partir_de` do `amostra.json` pode ser ignorada. A regra que
+continua valendo é não abrir as planilhas da primeira rodada antes de
+terminar a reanotação.
+
+O sorteio foi feito em 2026-10-19 (semente 2026): hibrido 10, manual 11,
+rag 6, templating 34 frases (61 no total).
 
 1. **Termine a primeira rodada** das quatro planilhas. O sorteio se recusa
    a rodar antes disso. Assim, você não sabe quais frases vão ser
@@ -193,9 +211,9 @@ Koch, G. G. "The Measurement of Observer Agreement for Categorical Data".
 Biometrics, v. 33, n. 1, 1977.
 
 **Ressalvas para o texto:**
-- A concordância intra-anotador mede a **consistência**, não a
-  **correção**. Uma pessoa pode errar do mesmo jeito duas vezes. Ela não
-  substitui um segundo anotador e deve ser apresentada assim.
+- O kappa mede a concordância entre a LLM e a autora, não a
+  **correção**: os dois podem errar do mesmo jeito. As frases em que
+  discordarem devem ser discutidas no texto.
 - Se um método tiver quase todas as frases com o mesmo rótulo (o
   templating deve ter quase só `S`), o kappa dele fica instável ou
   indefinido: com p_e perto de 1, qualquer discordância derruba o kappa.

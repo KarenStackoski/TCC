@@ -1,0 +1,14 @@
+﻿id,secao,frase,rotulo,artefatos,fonte_declarada,observacao
+16,Autenticação e Cadastro,Particularidades:,,,,
+17,Autenticação e Cadastro,"É possível utilizar a autenticação por OAuth em iOS e Android;
+Ao realizar o primeiro acesso, a conta é criada automaticamente sem etapas extras;
+O login é válido por 30 dias.",,,,
+25,Catálogo de Restaurantes,"Na tela principal, o usuário acessa o campo de busca e digita o nome (parcial ou completo) do restaurante.",,,,
+31,Catálogo de Restaurantes,É possível selecionar múltiplas categorias simultaneamente.,,,,
+38,Carrinho e Pedidos,"Ao confirmar, o item é adicionado ao carrinho e um indicador flutuante com o total aparece na tela.",,,,
+44,Carrinho e Pedidos,Cada etapa é atualizada via WebSocket em tempo real.,,,,
+47,Carrinho e Pedidos,"Ao clicar, o usuário informa o motivo do cancelamento (campo obrigatório com opções pré-definidas) e confirma.",,,,
+51,Pagamentos,"Cartão de crédito: Na tela de checkout, o usuário seleciona ""Cartão de Crédito"" e insere os dados do cartão (número, nome, validade, CVV) em um formulário tokenizado via gateway de pagamento.",,,,
+52,Pagamentos,"O sistema exibe as bandeiras aceitas (Visa, Mastercard, Elo, Amex).",,,,
+54,Pagamentos,PIX: O usuário seleciona Pix como método de pagamento e um QR Code é gerado com validade de 10 minutos.,,,,
+66,Avaliações,"Na tela de avaliação, o usuário atribui de 1 a 5 estrelas para o restaurante e pode adicionar um comentário opcional de até 300 caracteres.",,,,

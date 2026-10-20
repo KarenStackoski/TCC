@@ -1,0 +1,11 @@
+﻿id,secao,frase,rotulo,artefatos,fonte_declarada,observacao
+18,Funcionalidades > Cadastro e Login,"Cadastro com e-mail e senha: os usuários novos podem criar uma conta no app, inserindo nome completo, e-mail e senha.",,,SCRUM-7,
+19,Funcionalidades > Cadastro e Login,"O sistema valida o e-mail e a senha, e envia um e-mail de confirmação.",,,SCRUM-7,
+27,Funcionalidades > Busca e Filtro,"Filtro por categoria: os usuários podem filtrar restaurantes por categoria de culinária, selecionando múltiplas categorias simultaneamente.",,,SCRUM-11,
+35,Funcionalidades > Acompanhamento e Pagamento,"Acompanhamento de status do pedido: os usuários podem acessar uma tela de acompanhamento com linha do tempo visual, mostrando as etapas do pedido em tempo real.",,,SCRUM-15,
+42,Funcionalidades > Entrega e Avaliação,"Avaliação do restaurante: após o pedido ser marcado como entregue, os usuários recebem uma notificação convidando-os a avaliar, atribuindo de 1 a 5 estrelas e adicionando um comentário opcional.",,,SCRUM-21,
+52,Tarefas Operacionais > Mensagem de erro sem conexão com internet,"A melhoria consiste em detectar a ausência de conexão imediatamente e exibir uma tela amigável com ícone, mensagem clara e botão ""Tentar novamente"".",,,SCRUM-31,
+58,"Problemas Conhecidos > BUG-01 — App trava ao adicionar item sem foto ao carrinho (SCRUM-22, status: Tarefas pendentes)",O aplicativo para de responder e exibe uma tela branca ao tentar adicionar um item sem imagem ao carrinho.,,,SCRUM-22,
+63,"Problemas Conhecidos > BUG-03 — Valor do frete somando em dobro no resumo do pedido (SCRUM-25, status: Tarefas pendentes)","Na tela de checkout, a taxa de entrega é exibida corretamente, mas também é somada erroneamente no campo ""Subtotal dos itens"", resultando em um total incorreto.",,,SCRUM-25,
+68,"Problemas Conhecidos > BUG-05 — Login com Google falha em Android 10 (SCRUM-27, status: Tarefas pendentes)","Ao tentar autenticar com o Google em dispositivos Android 10, o fluxo OAuth redireciona corretamente para a tela de seleção de conta, mas ao retornar ao app, exibe uma mensagem de falha na autenticação sem mais detalhes.",,,SCRUM-27,
+71,"Problemas Conhecidos > BUG-06 — Tela de rastreamento não atualiza posição automaticamente (SCRUM-28, status: Tarefas pendentes)",O usuário precisa fechar e reabrir a tela para ver a posição atualizada.,,,SCRUM-28,

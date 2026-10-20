@@ -4,9 +4,10 @@ Este documento explica o que cada métrica mede, por que foi escolhida, de
 onde vem (fonte) e qual script a calcula. O código fica em `src/evaluation/`
 e os resultados em `data/evaluation/`.
 
-> **Aviso sobre as referências:** as referências acadêmicas abaixo foram
-> escritas de memória (autores, título, local e ano). Confira cada uma na
-> fonte original antes de citar no TCC, principalmente as marcadas com (*).
+> **Referências:** as referências acadêmicas abaixo foram conferidas em
+> 2026-10-19 (seção 11 traz volume, páginas e DOI de cada uma). As de
+> documentação técnica (Python, Cohere, W3C, NIST) são páginas vivas e não
+> foram reconferidas.
 
 ## 1. Visão geral
 
@@ -18,8 +19,8 @@ avaliação de geração de texto (Gatt e Krahmer, 2018; van der Lee et al., 202
 | Aspecto | Métrica | Tipo | Script |
 |---|---|---|---|
 | Custo de geração | tempo (mediana de N execuções), tokens | automática | `benchmark.py` |
-| Fidelidade às fontes | % de frases sustentadas / não sustentadas | anotação humana | `fidelidade.py` |
-| Cobertura de conteúdo | % dos 32 artefatos presentes | anotação humana | `fidelidade.py` |
+| Fidelidade às fontes | % de frases sustentadas / não sustentadas | anotação (LLM + amostra humana) | `fidelidade.py` |
+| Cobertura de conteúdo | % dos 32 artefatos presentes | anotação (LLM + amostra humana) | `fidelidade.py` |
 | Cobertura explícita | % dos artefatos citados por chave, código ou título | automática | `metricas_texto.py` |
 | Rastreabilidade | % do texto coberto por citações do Command R | automática | `metricas_texto.py` |
 | Legibilidade | Flesch adaptado ao português | automática | `metricas_texto.py` |
@@ -30,8 +31,9 @@ avaliação de geração de texto (Gatt e Krahmer, 2018; van der Lee et al., 202
 | Diferença entre métodos | Mann-Whitney U, A12 de Vargha-Delaney, ajuste de Holm | estatística | `estatistica.py` |
 
 **Escopo: só métricas técnicas.** O estudo não tem avaliação com usuários
-(nem avaliação humana cega por terceiros, nem teste de uso). A anotação de
-fidelidade (seção 4) é feita pela autora. O que isso deixa de fora está na
+(nem avaliação humana cega por terceiros, nem teste de uso). A primeira rodada
+da anotação de fidelidade (seção 4) foi feita pelo Claude (Opus 5.5) e
+uma amostra de 20% é reanotada pela autora. O que isso deixa de fora está na
 seção 9.
 
 O manual humano (método 4) deve estar em `data/manuals_generated/manual/manual.md`
@@ -102,7 +104,7 @@ rodam para os outros três métodos, e o BERTScore não é calculado.
 - **Índice de Flesch adaptado ao português brasileiro:**
   `248,835 − 1,015 × (palavras/frase) − 84,6 × (sílabas/palavra)`.
   Faixas: 75–100 muito fácil; 50–75 fácil; 25–50 difícil; 0–25 muito
-  difícil. Fonte (*): Martins, Ghiraldelo, Nunes e Oliveira Jr.,
+  difícil. Fonte: Martins, Ghiraldelo, Nunes e Oliveira Jr.,
   "Readability formulas applied to textbooks in Brazilian Portuguese",
   Notas do ICMSC-USP, Série Computação, n. 28, 1996.
 - **Sílabas:** pontos de hifenização do Pyphen com os padrões pt_BR do
@@ -141,9 +143,15 @@ rodam para os outros três métodos, e o BERTScore não é calculado.
 - **Regras de anotação:** em `02_guia_fidelidade.md`: rótulos, regras de
   decisão (status dos artefatos, melhorias, bugs, números), o tipo de erro
   (intrínseco ou extrínseco) e a pista `fonte_declarada` das planilhas.
-- **Consistência:** a anotação é de uma pessoa só. Sem segundo anotador,
-  dá para reanotar uma amostra depois de um tempo e medir a concordância
-  intra-anotador com o kappa de Cohen (`reanotacao.py`; guia, seção 8).
+- **Quem anotou:** a primeira rodada completa (296 frases, 2026-10-19)
+  foi feita pelo Claude (modelo Opus 5.5, `claude-opus-5-5`), seguindo o
+  guia com as regras de decisão sugeridas nele. A autora reanota, às
+  cegas, uma amostra sorteada de 20% (61 frases).
+- **Concordância:** a reanotação da autora contra a primeira rodada dá a
+  concordância **entre anotadores** (LLM × pessoa), pelo kappa de Cohen
+  (`reanotacao.py`; guia, seção 8). Isso também valida o uso da LLM como
+  anotadora: se o kappa for baixo, a primeira rodada não pode ser usada
+  como está.
 
 ## 5. BERTScore (`bertscore.py`)
 
@@ -177,7 +185,7 @@ rodam para os outros três métodos, e o BERTScore não é calculado.
 - **Similaridade:** `difflib.SequenceMatcher.ratio()` sobre as palavras
   (2·M/T). Fontes: documentação do Python, módulo `difflib`; Ratcliff e
   Metzener, "Pattern Matching: The Gestalt Approach", Dr. Dobb's Journal,
-  1988 (*).
+  1988.
 - **Estrutura:** quantas listas diferentes de seções de nível 2
   apareceram. O esperado é 1 no templating e no híbrido (estrutura fixa) e
   mais de 1 no RAG (a LLM decide a estrutura).
@@ -278,8 +286,10 @@ de conclusão):
   aproximações. A utilidade do juiz é a opinião de uma LLM, e essa
   opinião não foi validada contra a de pessoas. O BERTScore mede
   semelhança com o manual da autora, não qualidade.
-- **Interna:** a fidelidade e o manual humano são feitos pela mesma
-  pessoa (a autora), sem segundo anotador. O juiz pode favorecer os textos
+- **Interna:** a primeira rodada da fidelidade foi anotada por uma LLM
+  (Claude), que pode ser leniente com textos gerados por outra LLM; só
+  20% das frases têm anotação humana (a da autora, que também escreveu o
+  manual humano e não está cega para o método). O juiz pode favorecer os textos
   da Cohere (seção 7).
 - **Externa:** há um único projeto de entrada (os 32 artefatos de
   `data/raw/data.json`) e um único provedor de LLM. Os resultados não se
@@ -302,8 +312,9 @@ python -m src.evaluation.benchmark --repeticoes 10   # já rodado em 2026-09-27
 # 3. Fidelidade: gera as planilhas; anotar; depois analisar
 python -m src.evaluation.fidelidade preparar
 python -m src.evaluation.fidelidade analisar
-#    Reanotação (concordância intra-anotador): sortear só com a 1ª rodada
-#    completa; reanotar depois de 7 dias (guia, seção 8)
+#    Reanotação (concordância LLM × autora): sortear só com a 1ª rodada
+#    completa; a autora reanota sem abrir a 1ª rodada (guia, seção 8)
+#    Sorteio já feito em 2026-10-19 (semente 2026, 61 frases)
 python -m src.evaluation.reanotacao sortear --fracao 0.2 --semente 2026
 python -m src.evaluation.reanotacao concordancia
 
@@ -324,3 +335,76 @@ Total: cerca de 105 chamadas, bem abaixo do limite de 1.000 por mês. O
 manual humano entrar, só ele é avaliado. Uma chave Trial nunca gera
 cobrança: se o limite acabar, a API só passa a recusar as chamadas
 (Cohere, "Rate Limits").
+
+## 11. Referências conferidas (2026-10-19)
+
+Conferidas no registro do editor, no repositório institucional ou em
+indexadores (ACL Anthology, Project Euclid, JSTOR, OpenReview, NeurIPS
+Proceedings).
+
+- Arcuri, A.; Briand, L. A practical guide for using statistical tests to
+  assess randomized algorithms in software engineering. ICSE 2011.
+  DOI 10.1145/1985793.1985795.
+- Cohen, J. A Coefficient of Agreement for Nominal Scales. Educational and
+  Psychological Measurement, v. 20, n. 1, p. 37–46, 1960.
+  DOI 10.1177/001316446002000104.
+- Gatt, A.; Krahmer, E. Survey of the State of the Art in Natural Language
+  Generation: Core Tasks, Applications and Evaluation. Journal of
+  Artificial Intelligence Research, v. 61, p. 65–170, 2018.
+  DOI 10.1613/jair.5477. (O arXiv indica v. 60, 2017; cite a versão do JAIR.)
+- Georges, A.; Buytaert, D.; Eeckhout, L. Statistically Rigorous Java
+  Performance Evaluation. OOPSLA 2007, p. 57–76.
+- Holm, S. A Simple Sequentially Rejective Multiple Test Procedure.
+  Scandinavian Journal of Statistics, v. 6, n. 2, p. 65–70, 1979.
+- Ji, Z. et al. Survey of Hallucination in Natural Language Generation.
+  ACM Computing Surveys, v. 55, n. 12, art. 248, 2023. (Volume e número de
+  artigo vistos só em indexador; confira o DOI na ACM Digital Library.)
+- Landis, J. R.; Koch, G. G. The Measurement of Observer Agreement for
+  Categorical Data. Biometrics, v. 33, n. 1, p. 159–174, 1977.
+  DOI 10.2307/2529310.
+- Liu, Y. et al. G-Eval: NLG Evaluation using GPT-4 with Better Human
+  Alignment. EMNLP 2023, p. 2511–2522.
+- Mann, H. B.; Whitney, D. R. On a Test of Whether One of Two Random
+  Variables is Stochastically Larger than the Other. The Annals of
+  Mathematical Statistics, v. 18, n. 1, p. 50–60, 1947.
+  DOI 10.1214/aoms/1177730491.
+- Martins, T. B. F.; Ghiraldelo, C. M.; Nunes, M. G. V.; Oliveira Jr.,
+  O. N. Readability formulas applied to textbooks in Brazilian Portuguese.
+  Notas do ICMSC, Série Computação, n. 28. São Carlos: ICMSC-USP, jun. 1996.
+  ISSN 0103-2577. Conferido no PDF do Repositório da USP (item 000906089):
+  o relatório usa a fórmula original de Flesch (206,835 − 84,6 × sílabas/
+  palavra − 1,015 × palavras/frase) e soma 42 pontos aos textos em
+  português (p. 6), o que dá a constante 248,835 do código; as faixas
+  (75–100, 50–75, 25–50, < 25) estão nas p. 3–4 e 7.
+- Maynez, J.; Narayan, S.; Bohnet, B.; McDonald, R. On Faithfulness and
+  Factuality in Abstractive Summarization. ACL 2020, p. 1906–1919.
+  DOI 10.18653/v1/2020.acl-main.173.
+- Panickssery, A.; Bowman, S. R.; Feng, S. LLM Evaluators Recognize and
+  Favor Their Own Generations. NeurIPS 2024. DOI 10.52202/079017-2197.
+- Ratcliff, J. W.; Metzener, D. E. Pattern Matching: The Gestalt Approach.
+  Dr. Dobb's Journal, n. 46, jul. 1988. (O algoritmo é de Ratcliff e
+  Obershelp, 1983; o artigo que o publicou é de Ratcliff e Metzener.)
+- Reiter, E. A Structured Review of the Validity of BLEU. Computational
+  Linguistics, v. 44, n. 3, p. 393–401, 2018. DOI 10.1162/coli_a_00322.
+- van der Lee, C.; Gatt, A.; van Miltenburg, E.; Krahmer, E. Human
+  evaluation of automatically generated text: Current trends and best
+  practice guidelines. Computer Speech & Language, v. 67, art. 101151,
+  2021.
+- Vargha, A.; Delaney, H. D. A Critique and Improvement of the CL Common
+  Language Effect Size Statistics of McGraw and Wong. Journal of
+  Educational and Behavioral Statistics, v. 25, n. 2, p. 101–132, 2000.
+  DOI 10.3102/10769986025002101. (Os limiares 0,56 / 0,64 / 0,71 foram
+  vistos só em fontes secundárias; o artigo é pago. Confira na p. do
+  artigo antes de citar os limiares.)
+- Virtanen, P. et al. SciPy 1.0: fundamental algorithms for scientific
+  computing in Python. Nature Methods, v. 17, n. 3, p. 261–272, 2020.
+  DOI 10.1038/s41592-019-0686-2.
+- Wohlin, C.; Runeson, P.; Höst, M.; Ohlsson, M. C.; Regnell, B.;
+  Wesslén, A. Experimentation in Software Engineering. Berlin: Springer,
+  2012. (Os quatro tipos de validade são os do livro; a página do editor
+  não foi aberta.)
+- Zhang, T.; Kishore, V.; Wu, F.; Weinberger, K. Q.; Artzi, Y. BERTScore:
+  Evaluating Text Generation with BERT. ICLR 2020.
+  https://openreview.net/forum?id=SkeHuCVFDr.
+- Zheng, L. et al. Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena.
+  NeurIPS 2023, Datasets and Benchmarks Track.

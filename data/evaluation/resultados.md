@@ -1,6 +1,6 @@
 # Resultados da avaliação
 
-Gerado por `python -m src.evaluation.relatorio` em 2026-10-18T20:30:16-03:00.
+Gerado por `python -m src.evaluation.relatorio` em 2026-10-19T19:50:42-03:00.
 Métodos e fontes de cada métrica: `docs/evaluation/01_estrutura.md`.
 
 Manuais avaliados nas seções de métricas automáticas, fidelidade e juiz (1 manual por método):
@@ -91,7 +91,12 @@ BERTScore em relação ao manual humano (sem reescalonamento). Cobertura explíc
 
 ## Fidelidade e cobertura de conteúdo (anotação)
 
-_Ainda sem dados._
+| metodo | frases | frases_verificaveis | sustentadas_% | parciais_% | nao_sustentadas_% | artefatos_cobertos | cobertura_conteudo_% |
+|---|---|---|---|---|---|---|---|
+| hibrido | 74 | 46 | 100.0 | 0.0 | 0.0 | 32 | 100.0 |
+| manual | 68 | 53 | 98.1 | 1.9 | 0.0 | 16 | 50.0 |
+| rag | 41 | 30 | 100.0 | 0.0 | 0.0 | 15 | 46.9 |
+| templating | 197 | 150 | 100.0 | 0.0 | 0.0 | 32 | 100.0 |
 
 ## LLM como juiz (1 a 5)
 
