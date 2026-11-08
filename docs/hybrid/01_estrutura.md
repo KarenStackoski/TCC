@@ -141,7 +141,7 @@ comparação entre etapas fazer sentido (mesmo document planning nas duas).
   *Claude prompting best practices — Long context prompting* (já citada em
   `docs/rag/01_estrutura.md`, seção 3.4). Implementado e testado nesta
   sessão, mas **não executado**, pela mesma decisão da Etapa 2: o usuário
-  não quer gastar a API paga da Anthropic por enquanto (`docs/PROGRESSO.md`,
+  não quer gastar a API paga da Anthropic por enquanto (registro de progresso, fora do repositório,
   Sessão 2). `gerar_manuais()` em `src/hybrid/generator.py` só chama a
   variante pedida, mesmo mecanismo do parâmetro `variantes` de
   `src/rag/pipeline.py`.

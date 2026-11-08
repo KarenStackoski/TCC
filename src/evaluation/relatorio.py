@@ -250,6 +250,11 @@ def main() -> None:
         "Cobertura explícita = artefatos citados por chave, código ou título.",
     )
     md += _tabela_md("Variação entre execuções", var)
+    md += _tabela_md(
+        "Termos técnicos",
+        _ler_csv(AVALIACAO_DIR / "termos_tecnicos" / "resultado.csv"),
+        "Mediana (mínimo–máximo) por execução; gerado por `python -m src.evaluation.termos_tecnicos`.",
+    )
     md += _tabela_md("Fidelidade e cobertura de conteúdo (anotação)", _ler_csv(AVALIACAO_DIR / "fidelidade" / "resultado.csv"))
     concordancia_fidelidade = _ler_csv(AVALIACAO_DIR / "fidelidade" / "reanotacao" / "concordancia.csv")
     if concordancia_fidelidade:

@@ -120,6 +120,19 @@ rodam para os outros três métodos, e o BERTScore não é calculado.
   itens de lista, linhas de tabela e "saltos de nível" (ex.: `##` seguido
   de `####`), que quebram a hierarquia. Fonte: W3C, WCAG 2.2, técnica
   G141, "Organizing a page using headings".
+- **Termos técnicos (`termos_tecnicos.py`):** o Flesch não reconhece
+  jargão, então os termos de `data/evaluation/termos_tecnicos/glossario.csv`
+  são contados por 100 palavras, em todas as execuções. O critério é a 2ª
+  heurística de Nielsen (CHI'94, p. 152-158): palavras familiares ao usuário,
+  e não jargão interno. Nível `estrito`: vocabulário de programação. Nível
+  `amplo`: estrito + termos limítrofes. Códigos internos (SCRUM-12, US-15)
+  são contados à parte. O glossário foi montado depois da geração dos manuais,
+  a partir do vocabulário deles, e precisa ser validado pela autora.
+- **Palavras raras:** proporção de palavras abaixo de Zipf 2,74 no `wordfreq`
+  (Speer, 2022), conversão do limiar de jargão do De-Jargonizer (Rakedzon et
+  al., PLOS ONE, 2017: menos de 50 ocorrências em 90 milhões de palavras). É
+  uma conferência independente do glossário, mas ruidosa, porque flexões
+  comuns como "cardápios" também ficam abaixo do limiar.
 
 ## 4. Fidelidade e cobertura (`fidelidade.py`, `metricas_texto.py`)
 
@@ -357,8 +370,9 @@ Proceedings).
 - Holm, S. A Simple Sequentially Rejective Multiple Test Procedure.
   Scandinavian Journal of Statistics, v. 6, n. 2, p. 65–70, 1979.
 - Ji, Z. et al. Survey of Hallucination in Natural Language Generation.
-  ACM Computing Surveys, v. 55, n. 12, art. 248, 2023. (Volume e número de
-  artigo vistos só em indexador; confira o DOI na ACM Digital Library.)
+  ACM Computing Surveys, v. 55, n. 12, p. 1–38, 2023.
+  DOI 10.1145/3571730. (Conferido no Crossref em 2026-10-21; o registro
+  não traz o número de artigo, então cite com páginas e DOI.)
 - Landis, J. R.; Koch, G. G. The Measurement of Observer Agreement for
   Categorical Data. Biometrics, v. 33, n. 1, p. 159–174, 1977.
   DOI 10.2307/2529310.

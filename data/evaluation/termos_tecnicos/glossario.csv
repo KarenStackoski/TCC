@@ -1,0 +1,75 @@
+termo,nivel,categoria
+api,estrito,programacao
+apis,estrito,programacao
+backend,estrito,programacao
+bottom sheet,estrito,interface_dev
+custom tab,estrito,interface_dev
+debounce,estrito,programacao
+erro 500,estrito,programacao
+exceção,estrito,programacao
+fallback,estrito,programacao
+gateway,estrito,programacao
+http,estrito,programacao
+internal server error,estrito,programacao
+job,estrito,programacao
+listener,estrito,programacao
+modais,estrito,interface_dev
+modal,estrito,interface_dev
+nullpointerexception,estrito,programacao
+oauth,estrito,programacao
+placeholder,estrito,interface_dev
+placeholders,estrito,interface_dev
+requisição,estrito,programacao
+requisições,estrito,programacao
+skeleton,estrito,interface_dev
+skeleton loading,estrito,interface_dev
+skeleton screens,estrito,interface_dev
+spinner,estrito,interface_dev
+timeout,estrito,programacao
+token,estrito,programacao
+tokenização,estrito,programacao
+tokenizado,estrito,programacao
+url,estrito,programacao
+urls,estrito,programacao
+websocket,estrito,programacao
+âncora,amplo,interface_dev
+atributos,amplo,programacao
+autenticação,amplo,programacao
+autenticado,amplo,programacao
+autenticar,amplo,programacao
+banner,amplo,interface_dev
+bug,amplo,processo
+bugs,amplo,processo
+card,amplo,interface_dev
+cards,amplo,interface_dev
+checkout,amplo,interface_dev
+chip,amplo,interface_dev
+chips,amplo,interface_dev
+componente,amplo,programacao
+componentes,amplo,programacao
+core,amplo,processo
+desabilitado,amplo,interface_dev
+desabilitados,amplo,interface_dev
+feedback,amplo,interface_dev
+implementa,amplo,processo
+implementação,amplo,processo
+implementada,amplo,processo
+implementado,amplo,processo
+implementar,amplo,processo
+label,amplo,interface_dev
+loading,amplo,interface_dev
+push,amplo,programacao
+redireciona,amplo,programacao
+redirecionado,amplo,programacao
+redirecionados,amplo,programacao
+redirecionamento,amplo,programacao
+reproduzível,amplo,processo
+sessão,amplo,programacao
+sessões,amplo,programacao
+severidade,amplo,processo
+status,amplo,processo
+valida,amplo,programacao
+validação,amplo,programacao
+validado,amplo,programacao
+validando,amplo,programacao
+validar,amplo,programacao

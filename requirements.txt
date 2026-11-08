@@ -16,6 +16,8 @@ anthropic==1.2.0
 bert-score==0.3.13
 pyphen==0.18.1
 scipy==1.18.1  # Mann-Whitney U (src/evaluation/estatistica.py)
+wordfreq==3.1.1  # palavras raras (src/evaluation/termos_tecnicos.py)
+matplotlib==3.11.2  # figura do tempo (src/evaluation/grafico_tempo.py)
 
 # langchain/langchain-core seguem instalados no venv (decisão desta sessão:
 # Etapa 2 usa os SDKs oficiais diretamente, sem LangChain — ver

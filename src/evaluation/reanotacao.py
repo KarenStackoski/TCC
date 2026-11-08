@@ -42,6 +42,7 @@ import csv
 import json
 import math
 import random
+import sys
 from collections import Counter
 from datetime import date, timedelta
 from pathlib import Path
@@ -62,7 +63,7 @@ def _rotulo(linha: dict) -> str:
 
 
 def _planilhas(diretorio: Path) -> list[Path]:
-    return sorted(p for p in diretorio.glob("*.csv") if p.name != "resultado.csv")
+    return sorted(p for p in diretorio.glob("*.csv") if p.name not in {"resultado.csv", "concordancia.csv"})
 
 
 def candidatas(linhas: list[dict]) -> list[dict]:
@@ -209,6 +210,7 @@ def main() -> None:
         print("e não consulte a primeira rodada enquanto reanota.")
         return
 
+    sys.stdout.reconfigure(encoding="utf-8")
     resultados = concordancia()
     with open(REANOTACAO_DIR / "concordancia.csv", "w", newline="", encoding="utf-8") as arquivo:
         escritor = csv.DictWriter(arquivo, fieldnames=list(resultados[0]))

@@ -1,0 +1,68 @@
+termo,nivel,templating,rag,hibrido,manual
+atributos,amplo,0,3,0,0
+autenticado,amplo,10,0,1,1
+autenticar,amplo,0,0,5,1
+autenticação,amplo,40,17,26,6
+banner,amplo,10,7,2,1
+bug,amplo,0,1,0,0
+bugs,amplo,0,10,0,0
+cards,amplo,10,0,10,0
+checkout,amplo,30,10,27,2
+chip,amplo,0,0,3,0
+chips,amplo,10,0,3,2
+componente,amplo,0,5,8,0
+componentes,amplo,10,4,0,0
+core,amplo,0,0,1,0
+desabilitados,amplo,10,9,4,1
+feedback,amplo,10,0,1,0
+implementa,amplo,0,3,1,0
+implementada,amplo,0,3,0,0
+implementado,amplo,10,2,0,0
+implementar,amplo,10,6,8,0
+implementação,amplo,0,1,2,0
+label,amplo,10,4,0,1
+push,amplo,30,10,21,0
+redireciona,amplo,10,0,5,1
+redirecionado,amplo,10,0,3,1
+redirecionados,amplo,0,0,1,0
+redirecionamento,amplo,0,0,2,0
+reproduzível,amplo,0,3,0,0
+sessão,amplo,10,0,0,0
+sessões,amplo,20,0,6,1
+severidade,amplo,0,0,2,0
+status,amplo,100,20,102,3
+valida,amplo,20,0,16,2
+validado,amplo,0,0,1,0
+validando,amplo,0,0,1,0
+validar,amplo,10,0,0,0
+validação,amplo,10,0,2,0
+âncora,amplo,10,0,0,0
+api,estrito,0,10,13,0
+backend,estrito,10,4,0,0
+bottom sheet,estrito,20,0,4,0
+custom tab,estrito,0,0,2,0
+debounce,estrito,20,0,8,0
+erro 500,estrito,10,10,11,0
+exceção,estrito,0,6,4,0
+fallback,estrito,10,0,0,0
+gateway,estrito,10,0,0,1
+http,estrito,0,6,16,0
+internal server error,estrito,0,3,5,0
+job,estrito,0,4,4,0
+listener,estrito,10,3,1,0
+modais,estrito,10,4,0,0
+nullpointerexception,estrito,0,3,0,0
+oauth,estrito,20,0,15,2
+placeholders,estrito,10,0,10,0
+requisição,estrito,10,4,3,0
+requisições,estrito,10,0,4,0
+skeleton loading,estrito,10,0,10,0
+skeleton screens,estrito,10,0,10,0
+spinner,estrito,20,0,20,0
+timeout,estrito,20,15,13,0
+token,estrito,10,0,0,0
+tokenizado,estrito,10,0,7,1
+tokenização,estrito,10,0,0,0
+url,estrito,0,5,4,0
+urls,estrito,0,0,4,0
+websocket,estrito,30,3,6,1

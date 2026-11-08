@@ -1,6 +1,6 @@
 # Resultados da avaliação
 
-Gerado por `python -m src.evaluation.relatorio` em 2026-10-19T19:50:42-03:00.
+Gerado por `python -m src.evaluation.relatorio` em 2026-11-08T10:26:40-03:00.
 Métodos e fontes de cada métrica: `docs/evaluation/01_estrutura.md`.
 
 Manuais avaliados nas seções de métricas automáticas, fidelidade e juiz (1 manual por método):
@@ -89,6 +89,17 @@ BERTScore em relação ao manual humano (sem reescalonamento). Cobertura explíc
 | rag | 10 | 10 | 4 | 0.6102 | 0.2829 |
 | templating | 10 | 1 | 1 | 1.0 | 1.0 |
 
+## Termos técnicos
+
+Mediana (mínimo–máximo) por execução; gerado por `python -m src.evaluation.termos_tecnicos`.
+
+| metodo | execucoes | termos_estrito_100p | termos_amplo_100p | frases_com_termo_estrito_% | codigos_100p | palavras_raras_% |
+|---|---|---|---|---|---|---|
+| templating | 10 | 1.22 (1.22–1.22) | 3.03 (3.03–3.03) | 10.2 (10.2–10.2) | 1.76 (1.76–1.76) | 3.16 (3.16–3.16) |
+| rag | 10 | 0.83 (0.65–2.2) | 2.725 (2.29–4.26) | 9.65 (7.1–17) | 0 (0–0) | 1.81 (1.31–2.48) |
+| hibrido | 10 | 1.425 (1.26–1.72) | 3.65 (3.18–4.13) | 13.95 (9.6–15.4) | 1.175 (1.04–2.02) | 3.03 (2.72–3.61) |
+| manual | 1 | 0.52 (0.52–0.52) | 2.9 (2.9–2.9) | 5.9 (5.9–5.9) | 0 (0–0) | 2.59 (2.59–2.59) |
+
 ## Fidelidade e cobertura de conteúdo (anotação)
 
 | metodo | frases | frases_verificaveis | sustentadas_% | parciais_% | nao_sustentadas_% | artefatos_cobertos | cobertura_conteudo_% |
@@ -97,6 +108,18 @@ BERTScore em relação ao manual humano (sem reescalonamento). Cobertura explíc
 | manual | 68 | 53 | 98.1 | 1.9 | 0.0 | 16 | 50.0 |
 | rag | 41 | 30 | 100.0 | 0.0 | 0.0 | 15 | 46.9 |
 | templating | 197 | 150 | 100.0 | 0.0 | 0.0 | 32 | 100.0 |
+
+## Concordância intra-anotador da fidelidade
+
+Rótulos da primeira rodada × reanotação de uma amostra sorteada; kappa de Cohen, faixas de Landis e Koch (1977).
+
+| metodo | frases | concordancia_% | kappa | interpretacao | discordancias |
+|---|---|---|---|---|---|
+| hibrido | 10 | 90.0 | 0.0 | leve | S→P (1) |
+| manual | 11 | 100.0 | 1.0 | quase perfeita |  |
+| rag | 6 | 83.3 | 0.0 | leve | S→- (1) |
+| templating | 34 | 94.1 | 0.726 | substancial | S→P (2) |
+| todos | 61 | 93.4 | 0.641 | substancial | S→- (1); S→P (3) |
 
 ## LLM como juiz (1 a 5)
 
