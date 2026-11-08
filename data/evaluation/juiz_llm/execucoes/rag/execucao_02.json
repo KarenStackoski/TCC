@@ -1,0 +1,28 @@
+{
+  "arquivo": "data/evaluation/execucoes/rag/execucao_02.md",
+  "sha256": "f1f66c1b6450278b857ea15a3de8f24575dcc026daaf2aaf8d858880a693c618",
+  "modelo_juiz": "command-a-03-2025",
+  "avaliacao": {
+    "clareza": {
+      "justificativa": "O manual apresenta uma estrutura clara e organizada, com seções bem definidas para cada funcionalidade. As descrições são diretas e fáceis de entender, sem ambiguidades.",
+      "nota": 5
+    },
+    "coerencia": {
+      "justificativa": "As seções do manual seguem uma ordem lógica, começando pela autenticação e cadastro, passando pelo catálogo de restaurantes, carrinho e pedidos, pagamentos, rastreamento de entrega e avaliações. A organização faz sentido e facilita a compreensão do usuário.",
+      "nota": 5
+    },
+    "completude": {
+      "justificativa": "O manual cobre as principais funcionalidades do sistema, incluindo autenticação, catálogo de restaurantes, carrinho e pedidos, pagamentos, rastreamento de entrega e avaliações. No entanto, falta detalhes sobre alguns critérios de aceitação e funcionalidades específicas mencionadas nos artefatos de origem, como a aplicação de cupons e o cancelamento de pedidos.",
+      "nota": 4
+    },
+    "correcao": {
+      "justificativa": "O texto está correto em gramática e ortografia, sem erros aparentes. As informações apresentadas parecem estar alinhadas com os artefatos de origem, sem contradições.",
+      "nota": 5
+    },
+    "utilidade": {
+      "justificativa": "O manual fornece informações suficientes para que um usuário consiga utilizar o sistema, com descrições claras das funcionalidades e como acessá-las. No entanto, a falta de detalhes sobre alguns critérios de aceitação pode limitar a utilidade em certos cenários.",
+      "nota": 4
+    },
+    "afirmacoes_nao_sustentadas": []
+  }
+}

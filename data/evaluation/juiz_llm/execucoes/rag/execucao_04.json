@@ -1,0 +1,35 @@
+{
+  "arquivo": "data/evaluation/execucoes/rag/execucao_04.md",
+  "sha256": "e157de47299532ab7490370a1bf46b69914335bd57929c181e81fb2f17224139",
+  "modelo_juiz": "command-a-03-2025",
+  "avaliacao": {
+    "clareza": {
+      "justificativa": "O manual utiliza linguagem simples e direta, com explicações claras sobre as funcionalidades do aplicativo. No entanto, em alguns pontos, como na descrição de bugs e melhorias, a clareza poderia ser aprimorada com exemplos mais concretos ou passos para reproduzir os problemas.",
+      "nota": 4
+    },
+    "coerencia": {
+      "justificativa": "O manual está organizado de forma lógica, seguindo a estrutura das funcionalidades do aplicativo. No entanto, a seção de bugs e melhorias parece um pouco deslocada e poderia ser melhor integrada ao longo do texto, relacionando-a com as funcionalidades correspondentes.",
+      "nota": 4
+    },
+    "completude": {
+      "justificativa": "O manual cobre as principais funcionalidades do aplicativo, mas deixa de fora detalhes importantes como o processo de cadastro, login, recuperação de senha, e algumas interações específicas do usuário, como a aplicação de cupons ou o cancelamento de pedidos. Além disso, não menciona épicos como Avaliações e Rastreamento de Entrega de forma detalhada.",
+      "nota": 3
+    },
+    "correcao": {
+      "justificativa": "O texto está bem escrito, com poucos erros gramaticais ou ortográficos. No entanto, há algumas afirmações que não são sustentadas pelos artefatos de origem, como a descrição de certos bugs e melhorias que não correspondem exatamente ao que está documentado.",
+      "nota": 4
+    },
+    "utilidade": {
+      "justificativa": "O manual fornece informações úteis para o usuário entender as funcionalidades básicas do aplicativo. No entanto, a falta de detalhes em algumas áreas críticas, como o processo de cadastro e login, e a ausência de instruções passo a passo para tarefas específicas, limitam sua utilidade prática.",
+      "nota": 3
+    },
+    "afirmacoes_nao_sustentadas": [
+      "O aplicativo atualmente só suporta tema claro. A melhoria consiste em implementar suporte a modo escuro, seguindo as diretrizes de design do sistema operacional (Android e iOS), com detecção automática da preferência do sistema e opção manual de alternar nas configurações do aplicativo.",
+      "O backend não está tratando o caso de cupom não encontrado antes de tentar acessar seus atributos, causando NullPointerException.",
+      "Reproduzível em 100% dos casos no Android. No iOS o comportamento é diferente — exibe ícone quebrado mas não trava.",
+      "O valor cobrado no pagamento é o correto — o problema é apenas na exibição do resumo.",
+      "A conexão WebSocket está sendo encerrada por inatividade e o aplicativo não implementa reconexão automática.",
+      "A causa identificada é um job de envio de notificações que roda em intervalo fixo de 5 minutos em vez de ser disparado por evento."
+    ]
+  }
+}

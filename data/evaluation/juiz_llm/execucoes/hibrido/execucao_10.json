@@ -1,0 +1,33 @@
+{
+  "arquivo": "data/evaluation/execucoes/hibrido/execucao_10.md",
+  "sha256": "2cd1090ee6aa58acd9e1efbbbcccd528ef9acd70f695171f723832276f291827",
+  "modelo_juiz": "command-a-03-2025",
+  "avaliacao": {
+    "clareza": {
+      "justificativa": "O manual utiliza linguagem simples e direta, com explicações claras sobre as funcionalidades e tarefas. As seções são bem definidas e os títulos ajudam a guiar o leitor.",
+      "nota": 4
+    },
+    "coerencia": {
+      "justificativa": "A organização do manual segue uma estrutura lógica, começando com uma visão geral, passando pelas funcionalidades e terminando com tarefas operacionais e problemas conhecidos. No entanto, a seção 'Tarefas Operacionais' parece um pouco deslocada, pois mistura melhorias futuras com funcionalidades atuais.",
+      "nota": 3
+    },
+    "completude": {
+      "justificativa": "O manual cobre a maioria das funcionalidades e problemas listados nos artefatos de origem, mas omite detalhes importantes como critérios de aceitação e severidade dos bugs. Além disso, não menciona algumas funcionalidades, como o rastreamento de entregador em tempo real (SCRUM-19) e o pagamento com cartão de crédito (SCRUM-17) de forma completa.",
+      "nota": 3
+    },
+    "correcao": {
+      "justificativa": "O texto está bem escrito, com gramática e ortografia corretas. Não foram encontrados erros óbvios ou informações que pareçam erradas.",
+      "nota": 5
+    },
+    "utilidade": {
+      "justificativa": "O manual fornece informações úteis para o usuário, mas a falta de detalhes em algumas seções e a omissão de funcionalidades importantes podem dificultar o uso completo do sistema.",
+      "nota": 3
+    },
+    "afirmacoes_nao_sustentadas": [
+      "O app atualmente só suporta tema claro, mas a melhoria consiste em implementar suporte a modo escuro, seguindo as diretrizes de design do sistema operacional (Android e iOS), com detecção automática da preferência do sistema e opção manual de alternar nas configurações do app.",
+      "Hoje o usuário precisa digitar o endereço de entrega em cada novo pedido, mas a melhoria consiste em salvar automaticamente o último endereço utilizado e pré-preencher o campo no próximo checkout, com opção de alterar.",
+      "Quando o usuário abre o app sem conexão com a internet, é exibida uma mensagem técnica de timeout após vários segundos de espera. A melhoria consiste em detectar a ausência de conexão imediatamente e exibir uma tela amigável com ícone, mensagem clara e botão 'Tentar novamente'.",
+      "Atualmente, ao carregar a lista de restaurantes ou o cardápio, a tela exibe um spinner centralizado enquanto os dados são buscados. A melhoria consiste em substituir esse spinner por skeleton screens (placeholders animados no formato dos cards reais), reduzindo a percepção de tempo de carregamento e melhorando a experiência visual."
+    ]
+  }
+}

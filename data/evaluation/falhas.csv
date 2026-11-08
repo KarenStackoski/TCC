@@ -1,0 +1,2 @@
+metodo,execucao,data_hora,erro
+hibrido,6,2026-09-27 (hora não registrada; falha anterior ao registro automático),"ReadTimeout: The read operation timed out (chamada de chat passou de 300 s)"

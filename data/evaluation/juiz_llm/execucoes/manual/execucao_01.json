@@ -1,0 +1,32 @@
+{
+  "arquivo": "data/manuals_generated/manual/manual.md",
+  "sha256": "76b1648bd6e175e35e70dc4c2c10d224eab4b40a921de4e10324cfb115853ed5",
+  "modelo_juiz": "command-a-03-2025",
+  "avaliacao": {
+    "clareza": {
+      "justificativa": "O manual utiliza linguagem simples e direta, com explicações claras para cada funcionalidade. As instruções são fáceis de seguir e não há ambiguidades significativas.",
+      "nota": 5
+    },
+    "coerencia": {
+      "justificativa": "A organização do manual segue a ordem lógica de uso do app (autenticação → catálogo → carrinho → pagamento → rastreamento → avaliações). As seções estão bem conectadas e não há saltos ilógicos.",
+      "nota": 5
+    },
+    "completude": {
+      "justificativa": "O manual cobre todas as funcionalidades principais descritas nos artefatos de origem, incluindo autenticação, catálogo, carrinho, pagamentos, rastreamento e avaliações. No entanto, faltam detalhes sobre tratamento de erros (ex: cupom inválido) e funcionalidades secundárias como modo escuro.",
+      "nota": 4
+    },
+    "correcao": {
+      "justificativa": "O texto está bem escrito, sem erros gramaticais ou ortográficos evidentes. As informações técnicas (ex: validade do QR Code PIX) estão corretas conforme os artefatos.",
+      "nota": 5
+    },
+    "utilidade": {
+      "justificativa": "O manual fornece instruções passo a passo para todas as tarefas principais, permitindo que um usuário novo entenda como utilizar o app. A inclusão de detalhes como tempo de validade de links e comportamento de notificações aumenta sua utilidade prática.",
+      "nota": 5
+    },
+    "afirmacoes_nao_sustentadas": [
+      "O manual afirma que o QR Code PIX tem validade de 10 minutos, mas os artefatos de origem especificam 10 minutos (SCRUM-18 — US-12).",
+      "O manual menciona que o usuário pode desativar notificações nas configurações do app, mas essa funcionalidade não está presente nos artefatos de origem.",
+      "O manual afirma que o tempo estimado de entrega é recalculado dinamicamente no rastreamento, mas os artefatos especificam atualização a cada 10 segundos (SCRUM-19 — US-13)."
+    ]
+  }
+}

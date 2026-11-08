@@ -1,0 +1,31 @@
+{
+  "arquivo": "data/evaluation/execucoes/hibrido/execucao_01.md",
+  "sha256": "5d57b4cca96fab55b152178487ac397163514e8fb99ea2e923f30a54681bfc26",
+  "modelo_juiz": "command-a-03-2025",
+  "avaliacao": {
+    "clareza": {
+      "justificativa": "O manual utiliza linguagem simples e direta, com explicações claras sobre as funcionalidades e tarefas. As seções são bem definidas e os títulos ajudam a guiar o leitor.",
+      "nota": 5
+    },
+    "coerencia": {
+      "justificativa": "A organização do manual segue uma estrutura lógica, começando com uma visão geral, passando pelas funcionalidades e terminando com tarefas operacionais e problemas conhecidos. Cada seção está bem conectada à anterior.",
+      "nota": 5
+    },
+    "completude": {
+      "justificativa": "O manual cobre a maioria das funcionalidades e tarefas mencionadas nos artefatos de origem, incluindo cadastro, busca, pagamento, rastreamento e avaliações. No entanto, faltam detalhes sobre algumas funcionalidades, como a opção de salvar endereços frequentes (SCRUM-32) e a detecção automática de modo escuro (SCRUM-33).",
+      "nota": 4
+    },
+    "correcao": {
+      "justificativa": "O texto está bem escrito, sem erros gramaticais ou ortográficos evidentes. As informações apresentadas parecem estar corretas e alinhadas com os artefatos de origem.",
+      "nota": 5
+    },
+    "utilidade": {
+      "justificativa": "O manual fornece informações suficientes para que um usuário consiga utilizar o sistema, desde o cadastro até a avaliação de pedidos. As explicações são claras e as seções estão bem organizadas para facilitar a consulta.",
+      "nota": 5
+    },
+    "afirmacoes_nao_sustentadas": [
+      "Permite que o usuário expresse sua experiência com o restaurante e o entregador após a conclusão do pedido, gerando dados de qualidade para a plataforma. (A avaliação do entregador não é mencionada nos artefatos de origem)",
+      "Os usuários podem digitar o código do cupom na tela de checkout e aplicar o desconto no pedido. O sistema valida o cupom e exibe o desconto aplicado. (O manual não menciona a validação de valor mínimo de pedido, uso por usuário e outras regras citadas em SCRUM-14)"
+    ]
+  }
+}

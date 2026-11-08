@@ -165,7 +165,7 @@ def gerar_secao_claude(categoria: str, artefatos: list[Artefato]) -> str:
     """Gera o texto de UMA seção via Claude (Messages API). Implementado e
     testado (função pura `montar_prompt_claude`), mas não executado nesta
     sessão — decisão de não usar a API paga da Anthropic por enquanto (mesma
-    decisão da Etapa 2, ver docs/PROGRESSO.md)."""
+    decisão da Etapa 2)."""
     if not artefatos:
         return ""
 

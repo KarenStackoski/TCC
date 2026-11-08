@@ -1,0 +1,31 @@
+{
+  "arquivo": "data/evaluation/execucoes/templating/execucao_03.md",
+  "sha256": "a92b9c2fe67de2e499e3feca84a1d8e7e4b4d8a26a2a8d006d8984d84350d42d",
+  "modelo_juiz": "command-a-03-2025",
+  "avaliacao": {
+    "clareza": {
+      "justificativa": "O manual utiliza linguagem simples e direta, com descrições claras das funcionalidades e passos a passo bem estruturados. As histórias de usuário e tarefas são explicadas de forma acessível, sem ambiguidades.",
+      "nota": 5
+    },
+    "coerencia": {
+      "justificativa": "A organização do manual segue uma lógica clara, começando com uma visão geral das épicas, passando pelas histórias de usuário e terminando com tarefas operacionais e problemas conhecidos. Cada seção se encadeia de forma natural, facilitando a compreensão.",
+      "nota": 5
+    },
+    "completude": {
+      "justificativa": "O manual cobre todas as funcionalidades principais (histórias de usuário), tarefas operacionais e problemas conhecidos presentes nos artefatos de origem. No entanto, não menciona os bugs BUG-02 e BUG-03, que estão listados nos artefatos como pendentes.",
+      "nota": 4
+    },
+    "correcao": {
+      "justificativa": "O texto está bem escrito, sem erros gramaticais ou ortográficos. As informações técnicas e funcionais estão alinhadas com os artefatos de origem, sem contradições aparentes.",
+      "nota": 5
+    },
+    "utilidade": {
+      "justificativa": "O manual fornece instruções detalhadas e passos a passo para cada funcionalidade, além de descrever tarefas operacionais e problemas conhecidos. Isso permite que o usuário entenda como utilizar o sistema e o que esperar em situações específicas.",
+      "nota": 5
+    },
+    "afirmacoes_nao_sustentadas": [
+      "BUG-02 — Filtro de categoria não reseta ao voltar para tela inicial",
+      "BUG-03 — Valor do frete somando em dobro no resumo do pedido"
+    ]
+  }
+}

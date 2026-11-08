@@ -2,6 +2,6 @@ venv/
 .env
 __pycache__/
 *.pyc
-data/manuals_generated/
 .chroma/
 .claude/
+saida_banca/

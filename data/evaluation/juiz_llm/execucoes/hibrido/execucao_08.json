@@ -1,0 +1,28 @@
+{
+  "arquivo": "data/evaluation/execucoes/hibrido/execucao_08.md",
+  "sha256": "c05183fd182a59d3ed78c8ad1499cc1c8a1f9f8697abe20be0eade79744111aa",
+  "modelo_juiz": "command-a-03-2025",
+  "avaliacao": {
+    "clareza": {
+      "justificativa": "O manual apresenta uma estrutura clara e organizada, com seções bem definidas para cada funcionalidade e problema. As descrições são diretas e fáceis de entender, sem ambiguidades.",
+      "nota": 5
+    },
+    "coerencia": {
+      "justificativa": "As partes do manual se encadeiam de forma lógica, seguindo uma ordem natural que reflete o fluxo de uso do aplicativo. A organização por épicos e funcionalidades facilita a compreensão.",
+      "nota": 5
+    },
+    "completude": {
+      "justificativa": "O manual cobre as principais funcionalidades, tarefas operacionais e problemas conhecidos, fornecendo informações suficientes para que um usuário entenda como utilizar o sistema. No entanto, alguns detalhes técnicos (como o funcionamento exato do WebSocket para rastreamento) poderiam ser expandidos.",
+      "nota": 4
+    },
+    "correcao": {
+      "justificativa": "O texto está bem escrito, com gramática e ortografia corretas. Não foram identificadas informações que pareçam erradas ou contraditórias.",
+      "nota": 5
+    },
+    "utilidade": {
+      "justificativa": "Com este manual, um usuário conseguiria usar o sistema de forma eficaz, pois ele fornece instruções claras e informações relevantes sobre as funcionalidades e como lidar com problemas comuns.",
+      "nota": 5
+    },
+    "afirmacoes_nao_sustentadas": []
+  }
+}

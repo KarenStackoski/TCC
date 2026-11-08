@@ -1,0 +1,31 @@
+{
+  "arquivo": "data/evaluation/execucoes/rag/execucao_08.md",
+  "sha256": "21035d17e364db228c0d24a4432ebd445a827a1078747eaa70d26efe70d7fc77",
+  "modelo_juiz": "command-a-03-2025",
+  "avaliacao": {
+    "clareza": {
+      "justificativa": "O manual utiliza linguagem simples e direta, com frases curtas e objetivas, facilitando a compreensão do usuário. No entanto, algumas seções, como 'Bugs e Melhorias', poderiam ser mais claras na descrição dos problemas e soluções.",
+      "nota": 4
+    },
+    "coerencia": {
+      "justificativa": "O manual segue uma estrutura lógica, começando pela autenticação e cadastro, passando pelo catálogo de restaurantes, carrinho, pagamentos, rastreamento e avaliações. No entanto, a seção 'Bugs e Melhorias' parece um pouco deslocada e poderia ser melhor integrada ao fluxo principal.",
+      "nota": 3
+    },
+    "completude": {
+      "justificativa": "O manual cobre as principais funcionalidades do aplicativo, mas deixa de fora alguns detalhes importantes, como o processo de cancelamento de pedido, a aplicação de cupons e a redefinição de senha. Além disso, não menciona a funcionalidade de filtro por categoria de restaurantes.",
+      "nota": 3
+    },
+    "correcao": {
+      "justificativa": "O texto está bem escrito, com gramática e ortografia corretas. No entanto, há algumas afirmações que não são sustentadas pelos artefatos de origem, como a necessidade de fechar e reabrir a tela para ver a posição atualizada do entregador.",
+      "nota": 4
+    },
+    "utilidade": {
+      "justificativa": "O manual fornece informações úteis para o usuário, mas poderia ser mais completo e detalhado em algumas seções. A falta de informações sobre funcionalidades importantes, como cancelamento de pedido e aplicação de cupons, pode dificultar o uso do sistema por parte do usuário.",
+      "nota": 3
+    },
+    "afirmacoes_nao_sustentadas": [
+      "o aplicativo utiliza um mapa para mostrar a posição do entregador, mas é necessário fechar e reabrir a tela para ver a posição atualizada após 2 minutos de inatividade.",
+      "para acompanhar a posição do entregador em tempo real, lembre-se de atualizar a tela após 2 minutos de inatividade."
+    ]
+  }
+}

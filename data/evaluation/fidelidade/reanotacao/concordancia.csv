@@ -1,0 +1,6 @@
+metodo,frases,concordancia_%,kappa,interpretacao,discordancias
+hibrido,10,90.0,0.0,leve,S→P (1)
+manual,11,100.0,1.0,quase perfeita,
+rag,6,83.3,0.0,leve,S→- (1)
+templating,34,94.1,0.726,substancial,S→P (2)
+todos,61,93.4,0.641,substancial,S→- (1); S→P (3)

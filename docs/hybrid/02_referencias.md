@@ -63,7 +63,7 @@
   `claude_backend.gerar_manual` (Etapa 2), parametrizada por categoria.
   Implementada e testada (a parte pura, `montar_prompt_claude`), **não
   executada** nesta sessão — decisão já registrada de não usar
-  `ANTHROPIC_API_KEY` paga por enquanto (`docs/PROGRESSO.md`, Sessão 2).
+  `ANTHROPIC_API_KEY` paga por enquanto (registro de progresso, Sessão 2).
 
 ### Bugs encontrados e corrigidos nesta sessão
 

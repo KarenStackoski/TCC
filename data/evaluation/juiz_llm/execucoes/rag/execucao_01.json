@@ -1,0 +1,30 @@
+{
+  "arquivo": "data/evaluation/execucoes/rag/execucao_01.md",
+  "sha256": "581458f10e4387d8bee3c6ba80a16c8590cdef5460acac57471be9763479cecb",
+  "modelo_juiz": "command-a-03-2025",
+  "avaliacao": {
+    "clareza": {
+      "justificativa": "O manual usa linguagem simples e direta, com frases curtas e objetivas, facilitando a compreensão do usuário.",
+      "nota": 4
+    },
+    "coerencia": {
+      "justificativa": "A organização do manual segue uma estrutura lógica, agrupando funcionalidades relacionadas e mantendo uma sequência coerente. No entanto, a seção 'Bugs e Melhorias' poderia estar melhor integrada às respectivas funcionalidades.",
+      "nota": 3
+    },
+    "completude": {
+      "justificativa": "O manual cobre as principais funcionalidades e problemas listados nos artefatos de origem, mas omite detalhes importantes como critérios de aceitação, severidade dos bugs e informações técnicas específicas.",
+      "nota": 3
+    },
+    "correcao": {
+      "justificativa": "O texto está bem escrito, sem erros gramaticais ou ortográficos evidentes. As informações apresentadas são consistentes com os artefatos de origem.",
+      "nota": 5
+    },
+    "utilidade": {
+      "justificativa": "O manual fornece informações úteis para o usuário entender as funcionalidades do app, mas a falta de detalhes sobre como realizar tarefas específicas (como aplicar um cupom ou rastrear um pedido) limita sua utilidade prática.",
+      "nota": 3
+    },
+    "afirmacoes_nao_sustentadas": [
+      "O app monitora o pagamento em tempo real e avança automaticamente para a próxima tela após a confirmação."
+    ]
+  }
+}
